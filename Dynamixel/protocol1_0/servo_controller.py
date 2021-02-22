@@ -112,7 +112,10 @@ class Controllers:
                     self._kit.servo[x].angle = self._val_list[x]
                 else:
                     self._kit2.servo[x].angle = self._val_list[x]
-
+    
+    def servoDynamixel_angle(self):
+        medium = self._val_list
+        return medium
 
 if __name__=="__main__":
     legEndpoints=np.array([[100,-100,87.5,1],[100,-100,-87.5,1],[-100,-100,87.5,1],[-100,-100,-87.5,1]])
