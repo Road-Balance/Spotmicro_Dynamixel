@@ -1,11 +1,27 @@
-import sys
+import sys, os
 sys.path.append("..")
+
+if os.name == 'nt':
+    import msvcrt
+    def getch():
+        return msvcrt.getch().decode()
+else:
+    import sys, tty, termios
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    def getch():
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
 
 import Kinematics.kinematics as kn
 import numpy as np
-from adafruit_servokit import ServoKit
-import board
-import busio
+# from adafruit_servokit import ServoKit
+# import board
+# import busio
 import time
 
 from dynamixel_sdk import *
