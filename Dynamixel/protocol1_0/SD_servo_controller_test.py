@@ -43,11 +43,11 @@ DEVICENAME                  = '/dev/ttyUSB0'
 TORQUE_ENABLE               = 1                
 TORQUE_DISABLE              = 0
 
-DXL_goal_POSITION_VALUE = [ 512 for i in range(DXL_Motor)]
+# DXL_goal_POSITION_VALUE = [ 512 for i in range(DXL_Motor)]
 
-DXL_goal_deg = []
-DXL_present_POSITION_VALUE = []
-DXL_goal_deg = [ int(i * 0.29) for i in DXL_goal_POSITION_VALUE ]
+# DXL_goal_deg = []
+# DXL_present_POSITION_VALUE = []
+# DXL_goal_deg = [ int(i * 0.29) for i in DXL_goal_POSITION_VALUE ]
 
 portHandler = PortHandler(DEVICENAME)
 
@@ -192,7 +192,8 @@ if __name__=="__main__":
     controller = Controllers()
 
     controller.angleToServo(thetas)
-    controller.servoDynamixel_angle()
+    DXL_goal_deg = controller.servoDynamixel_angle()
+    DXL_goal_POSITION_VALUE = [ int(i / 0.29) for i in DXL_goal_deg ]
 
     while 1:
         print("Press any key to continue! (or press ESC to quit!)")
