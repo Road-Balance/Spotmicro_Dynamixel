@@ -4,8 +4,9 @@ Use a keyboard to see how it works
 Use keyboard-Button to switch betweek walk on static-mode
 """
 from os import system, name 
-import sys
+import sys, os
 sys.path.append("..")
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 import matplotlib.animation as animation
 import numpy as np
@@ -116,7 +117,11 @@ def main(id, command_status):
         # First Step doesn't contains jointAngles
         if len(jointAngles):
             # Real Actuators
-            controller.servoRotate(jointAngles)
+            # controller.servoRotate(jointAngles)
+
+            controller.angleToServo(jointAngles)
+            DXL_goal_deg = controller.servoDynamixel_angle()
+            DXL_goal_POSITION_VALUE = [ int(i / 0.29) for i in DXL_goal_deg ]
             
             # # Plot Robot Pose into Matplotlib for Debugging
             # TODO: Matplotplib animation

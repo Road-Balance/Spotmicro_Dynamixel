@@ -9,7 +9,7 @@
 # You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
-#
+# 
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,8 +28,8 @@
 # Be sure that DXL MX properties are already set as %% ID : 1 / Baudnum : 34 (Baudrate : 57600)
 #
 
-import os
-
+import os, sys
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 if os.name == 'nt':
     import msvcrt
     def getch():
@@ -57,7 +57,7 @@ ADDR_MX_PRESENT_POSITION   = 36
 PROTOCOL_VERSION            = 1.0               # See which protocol version is used in the Dynamixel
 
 # set the number of dynamixel motor
-DXL_Motor = 12
+DXL_Motor = 3
 
 # Dynamixel motor 'AX-12A' unique number 
 # DXL_ID                      = 14
@@ -149,11 +149,12 @@ while 1:
     # Write goal position
     for i in range(DXL_Motor):
         xl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, i + 1, ADDR_MX_GOAL_POSITION, DXL_goal_POSITION_VALUE[i])
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
-    print("goal degree : %03d" % DXL_goal_deg)
+        if dxl_comm_result != COMM_SUCCESS:
+            print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+        elif dxl_error != 0:
+            print("%s" % packetHandler.getRxPacketError(dxl_error))
+    print(" *** goal degree *** ")
+    print(DXL_goal_deg)
         
     # # Write goal position
     # dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, DXL1_ID, ADDR_MX_GOAL_POSITION, DXL_MAXIMUM_POSITION_VALUE1)
@@ -171,9 +172,11 @@ while 1:
         elif dxl_error != 0:
             print("%s" % packetHandler.getRxPacketError(dxl_error))
         DXL_present_POSITION_VALUE.append(dxl_present_position)
-    print("present positon value : %04d" % DXL_present_POSITION_VALUE )   
+    print(" *** present positon value *** ") 
+    print(DXL_present_POSITION_VALUE)   
     DXL_present_deg = [ int(i * 0.29) for i in DXL_goal_POSITION_VALUE ]
-    print("present degree : %03d" % DXL_present_deg)
+    print(" *** present degree *** ")
+    print(DXL_present_deg)
         
     # Read present position
     # while 1:

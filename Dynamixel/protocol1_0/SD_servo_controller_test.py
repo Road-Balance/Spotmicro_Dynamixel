@@ -1,24 +1,27 @@
 import sys, os
-sys.path.append("..")
+# sys.path.append("..")
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
-if os.name == 'nt':
-    import msvcrt
-    def getch():
-        return msvcrt.getch().decode()
-else:
-    import sys, tty, termios
-    fd = sys.stdin.fileno()
-    old_settings = termios.tcgetattr(fd)
-    def getch():
-        try:
-            tty.setraw(sys.stdin.fileno())
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        return ch
+# if os.name == 'nt':
+#     import msvcrt
+#     def getch():
+#         return msvcrt.getch().decode()
+# else:
+#     import sys, tty, termios
+#     fd = sys.stdin.fileno()
+#     old_settings = termios.tcgetattr(fd)
+#     def getch():
+#         try:
+#             tty.setraw(sys.stdin.fileno())
+#             ch = sys.stdin.read(1)
+#         finally:
+#             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+#         return ch
 
-import Kinematics.kinematics as kn
+from Kinematics import kinematics as kn 
 import numpy as np
+import servo_controller
+# import kinematics.py
 # from adafruit_servokit import ServoKit
 # import board
 # import busio
@@ -32,7 +35,7 @@ ADDR_MX_PRESENT_POSITION   = 36
 
 PROTOCOL_VERSION            = 1.0
 
-DXL_Motor = 12
+DXL_Motor = 3
 
 DXL_ID = []
 DXL_ID = [ i + 1 for i in range(DXL_Motor)]
@@ -45,8 +48,8 @@ TORQUE_DISABLE              = 0
 
 # DXL_goal_POSITION_VALUE = [ 512 for i in range(DXL_Motor)]
 
-# DXL_goal_deg = []
-# DXL_present_POSITION_VALUE = []
+DXL_goal_deg = []
+DXL_present_POSITION_VALUE = []
 # DXL_goal_deg = [ int(i * 0.29) for i in DXL_goal_POSITION_VALUE ]
 
 portHandler = PortHandler(DEVICENAME)
@@ -81,7 +84,7 @@ class Controllers:
         self.SIM_LEG_THETA2 = 1
         self.SIM_LEG_THETA3 = 2
 
-        # [0]~[2] : 왼쪽 앞 다리 // [3]~[5] : 오른쪽 앞 다리 // [6]~[8] : 왼쪽 뒷 다리 // [9]~[11] : 오른쪽 뒷 다리
+        #  
         # centered position perpendicular to the ground
         self._servo_offsets = [170, 85, 90, 1, 95, 90, 172, 90, 90, 1, 90, 95]
         #self._servo_offsets = [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90]
@@ -157,15 +160,17 @@ class Controllers:
                     self._kit.servo[x].angle = self._val_list[x]
                 else:
                     self._kit2.servo[x].angle = self._val_list[x]
-
+    def servoDynamixel_angle(self):
+        medium = self._val_list
+        return medium
 
 if __name__=="__main__":
-    
+    # sys.path.append("..")
     if portHandler.openPort():
         print("Succeeded to open the port")
     else:
         print("Failed to open the port")
-        print("Press any key to terminate...")
+        print("Press any key to terminate...") 
         getch()
         quit()
     
@@ -195,29 +200,32 @@ if __name__=="__main__":
     DXL_goal_deg = controller.servoDynamixel_angle()
     DXL_goal_POSITION_VALUE = [ int(i / 0.29) for i in DXL_goal_deg ]
 
-    while 1:
-        print("Press any key to continue! (or press ESC to quit!)")
-        if getch() == chr(0x1b):
-            break
+    # # while 1:
+    #     print("Press any key to continue! (or press ESC to quit!)")
+        # if getch() == chr(0x1b):
+        #     break
 
-        for i in range(DXL_Motor):
-            xl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, i + 1, ADDR_MX_GOAL_POSITION, DXL_goal_POSITION_VALUE[i])
+    for i in range(DXL_Motor):
+        xl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, i + 1, ADDR_MX_GOAL_POSITION, DXL_goal_POSITION_VALUE[i])
         if dxl_comm_result != COMM_SUCCESS:
             print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
             print("%s" % packetHandler.getRxPacketError(dxl_error))
-        print("goal degree : %03d" % DXL_goal_deg)
+    print(" *** goal degree *** ")
+    print(DXL_goal_deg)
 
-        for i in range(DXL_Motor):
-            dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, i + 1, ADDR_MX_PRESENT_POSITION)
-            if dxl_comm_result != COMM_SUCCESS:
-                print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-            elif dxl_error != 0:
-                print("%s" % packetHandler.getRxPacketError(dxl_error))
-            DXL_present_POSITION_VALUE.append(dxl_present_position)
-        print("present positon value : %04d" % DXL_present_POSITION_VALUE )   
-        DXL_present_deg = [ int(i * 0.29) for i in DXL_goal_POSITION_VALUE ]
-        print("present degree : %03d" % DXL_present_deg)
+    for i in range(DXL_Motor):
+        dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, i + 1, ADDR_MX_PRESENT_POSITION)
+        if dxl_comm_result != COMM_SUCCESS:
+            print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+        elif dxl_error != 0:
+            print("%s" % packetHandler.getRxPacketError(dxl_error))
+        DXL_present_POSITION_VALUE.append(dxl_present_position)
+    print(" *** present positon value *** ") 
+    print(DXL_present_POSITION_VALUE)   
+    DXL_present_deg = [ int(i * 0.29) for i in DXL_goal_POSITION_VALUE ]
+    print(" *** present degree *** ")
+    print(DXL_present_deg)
 
     for i in range(DXL_Motor):
         dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, i + 1, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE)
@@ -229,7 +237,7 @@ if __name__=="__main__":
     portHandler.closePort()
         
     # legEndpoints=np.array([[100,-100,87.5,1],[100,-100,-87.5,1],[-100,-100,87.5,1],[-100,-100,-87.5,1]])
-    # thetas = kn.initIK(legEndpoints) #radians
+    # thetas = kinematics.initIK(legEndpoints) #radians
     
     # controller = Controllers()
 
