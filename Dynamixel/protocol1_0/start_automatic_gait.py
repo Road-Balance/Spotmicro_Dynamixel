@@ -18,7 +18,7 @@ import random
 
 import Kinematics.kinematics as kn
 import spotmicroai
-import servo_controller
+# import SD_servo_controller_test
 
 from multiprocessing import Process
 from Common.multiprocess_kb import KeyInterrupt

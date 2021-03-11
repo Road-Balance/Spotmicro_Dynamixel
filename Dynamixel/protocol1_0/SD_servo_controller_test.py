@@ -86,7 +86,7 @@ class Controllers:
 
         #  
         # centered position perpendicular to the ground
-        self._servo_offsets = [170, 85, 90, 1, 95, 90, 172, 90, 90, 1, 90, 95]
+        self._servo_offsets = [150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150]
         #self._servo_offsets = [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90]
 
         self._val_list = np.zeros(12) #[ x for x in range(12) ]
@@ -106,33 +106,61 @@ class Controllers:
 
         self.getDegreeAngles(La)
 
+        # #FL Lower
+        # self._val_list[0] = self._servo_offsets[0] - 0
+        # #FL Upper
+        # self._val_list[1] = self._servo_offsets[1] - 0    
+        # #FL Shoulder
+        # self._val_list[2] = self._servo_offsets[2] - 0 
+
+        # #FR Lower
+        # self._val_list[3] = self._servo_offsets[3] + 0
+        # #FR Upper
+        # self._val_list[4] = self._servo_offsets[4] + 0    
+        # #FR Shoulder
+        # self._val_list[5] = self._servo_offsets[5] + 0
+
+        # #BL Lower
+        # self._val_list[6] = self._servo_offsets[6] - 0
+        # #BL Upper
+        # self._val_list[7] = self._servo_offsets[7] - 0    
+        # #BL Shoulder, Formula flipped from the front
+        # self._val_list[8] = self._servo_offsets[8] - 0
+
+        # #BR Lower. 
+        # self._val_list[9] = self._servo_offsets[9] + 0
+        # #BR Upper
+        # self._val_list[10] = self._servo_offsets[10] + 0
+        # #BR Shoulder, Formula flipped from the front
+        # self._val_list[11] = self._servo_offsets[11] + 0
+
         #FL Lower
-        self._val_list[0] = self._servo_offsets[0] - self._thetas[0][2]
+        self._val_list[0] = self._servo_offsets[0] - self._thetas[0][0]
         #FL Upper
         self._val_list[1] = self._servo_offsets[1] - self._thetas[0][1]    
         #FL Shoulder
-        self._val_list[2] = self._servo_offsets[2] + self._thetas[0][0]
+        self._val_list[2] = self._servo_offsets[2] + self._thetas[0][2]
 
         #FR Lower
-        self._val_list[3] = self._servo_offsets[3] + self._thetas[1][2]
+        self._val_list[3] = self._servo_offsets[3] + self._thetas[1][0]
         #FR Upper
         self._val_list[4] = self._servo_offsets[4] + self._thetas[1][1]    
         #FR Shoulder
-        self._val_list[5] = self._servo_offsets[5] - self._thetas[1][0]
+        self._val_list[5] = self._servo_offsets[5] + self._thetas[1][2]
 
         #BL Lower
-        self._val_list[6] = self._servo_offsets[6] - self._thetas[2][2]
+        self._val_list[6] = self._servo_offsets[6] - self._thetas[2][0]
         #BL Upper
         self._val_list[7] = self._servo_offsets[7] - self._thetas[2][1]    
         #BL Shoulder, Formula flipped from the front
-        self._val_list[8] = self._servo_offsets[8] - self._thetas[2][0]
+        self._val_list[8] = self._servo_offsets[8] - self._thetas[2][2]
 
         #BR Lower. 
-        self._val_list[9] = self._servo_offsets[9] + self._thetas[3][2]
+        self._val_list[9] = self._servo_offsets[9] + self._thetas[3][0]
         #BR Upper
         self._val_list[10] = self._servo_offsets[10] + self._thetas[3][1]    
         #BR Shoulder, Formula flipped from the front
-        self._val_list[11] = self._servo_offsets[11] + self._thetas[3][0]     
+        self._val_list[11] = self._servo_offsets[11] + self._thetas[3][2]      
 
     def getServoAngles(self):
         return self._val_list
@@ -198,6 +226,7 @@ if __name__=="__main__":
 
     controller.angleToServo(thetas)
     DXL_goal_deg = controller.servoDynamixel_angle()
+    #print(medium)
     DXL_goal_POSITION_VALUE = [ int(i / 0.29) for i in DXL_goal_deg ]
 
     # # while 1:
@@ -212,6 +241,7 @@ if __name__=="__main__":
         elif dxl_error != 0:
             print("%s" % packetHandler.getRxPacketError(dxl_error))
     print(" *** goal degree *** ")
+    #print(medium)
     print(DXL_goal_deg)
 
     for i in range(DXL_Motor):
@@ -227,14 +257,14 @@ if __name__=="__main__":
     print(" *** present degree *** ")
     print(DXL_present_deg)
 
-    for i in range(DXL_Motor):
-        dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, i + 1, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE)
-        if dxl_comm_result != COMM_SUCCESS:
-            print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-        elif dxl_error != 0:
-            print("%s" % packetHandler.getRxPacketError(dxl_error))
+    # for i in range(DXL_Motor):
+    #     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, i + 1, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE)
+    #     if dxl_comm_result != COMM_SUCCESS:
+    #         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    #     elif dxl_error != 0:
+    #         print("%s" % packetHandler.getRxPacketError(dxl_error))
 
-    portHandler.closePort()
+    # portHandler.closePort()
         
     # legEndpoints=np.array([[100,-100,87.5,1],[100,-100,-87.5,1],[-100,-100,87.5,1],[-100,-100,-87.5,1]])
     # thetas = kinematics.initIK(legEndpoints) #radians

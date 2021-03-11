@@ -38,7 +38,9 @@ class Controllers:
 
         # [0]~[2] : 왼쪽 앞 다리 // [3]~[5] : 오른쪽 앞 다리 // [6]~[8] : 왼쪽 뒷 다리 // [9]~[11] : 오른쪽 뒷 다리
         # centered position perpendicular to the ground
-        self._servo_offsets = [170, 85, 90, 1, 95, 90, 172, 90, 90, 1, 90, 95]
+        self._servo_offsets = [150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150]
+        
+        # self._servo_offsets = [170, 85, 90, 1, 95, 90, 172, 90, 90, 1, 90, 95]
         #self._servo_offsets = [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90]
 
         self._val_list = np.zeros(12) #[ x for x in range(12) ]
@@ -52,39 +54,68 @@ class Controllers:
         La = [ [ int(x) for x in y ] for y in La ]
 
         self._thetas = La
+        return self._thetas
 
     # Angle mapping from radian to servo angles
     def angleToServo(self, La):
 
         self.getDegreeAngles(La)
 
-        #FL Lower
-        self._val_list[0] = self._servo_offsets[0] - self._thetas[0][2]
+        # #FL Lower
+        # self._val_list[0] = self._servo_offsets[0] - 0
+        # #FL Upper
+        # self._val_list[1] = self._servo_offsets[1] - 0    
+        # #FL Shoulder
+        # self._val_list[2] = self._servo_offsets[2] - 0 
+
+        # #FR Lower
+        # self._val_list[3] = self._servo_offsets[3] + 0
+        # #FR Upper
+        # self._val_list[4] = self._servo_offsets[4] + 0    
+        # #FR Shoulder
+        # self._val_list[5] = self._servo_offsets[5] + 0
+
+        # #BL Lower
+        # self._val_list[6] = self._servo_offsets[6] - 0
+        # #BL Upper
+        # self._val_list[7] = self._servo_offsets[7] - 0    
+        # #BL Shoulder, Formula flipped from the front
+        # self._val_list[8] = self._servo_offsets[8] - 0
+
+        # #BR Lower. 
+        # self._val_list[9] = self._servo_offsets[9] + 0
+        # #BR Upper
+        # self._val_list[10] = self._servo_offsets[10] + 0
+        # #BR Shoulder, Formula flipped from the front
+        # self._val_list[11] = self._servo_offsets[11] + 0
+
+           #FL Lower
+        self._val_list[0] = self._servo_offsets[0] - self._thetas[0][0]
         #FL Upper
         self._val_list[1] = self._servo_offsets[1] - self._thetas[0][1]    
         #FL Shoulder
-        self._val_list[2] = self._servo_offsets[2] + self._thetas[0][0]
+        self._val_list[2] = self._servo_offsets[2] - self._thetas[0][2]
 
         #FR Lower
-        self._val_list[3] = self._servo_offsets[3] + self._thetas[1][2]
+        self._val_list[3] = self._servo_offsets[3] + self._thetas[1][0]
         #FR Upper
         self._val_list[4] = self._servo_offsets[4] + self._thetas[1][1]    
         #FR Shoulder
-        self._val_list[5] = self._servo_offsets[5] - self._thetas[1][0]
+        self._val_list[5] = self._servo_offsets[5] + self._thetas[1][2]
 
         #BL Lower
-        self._val_list[6] = self._servo_offsets[6] - self._thetas[2][2]
+        self._val_list[6] = self._servo_offsets[6] - self._thetas[2][0]
         #BL Upper
         self._val_list[7] = self._servo_offsets[7] - self._thetas[2][1]    
         #BL Shoulder, Formula flipped from the front
-        self._val_list[8] = self._servo_offsets[8] - self._thetas[2][0]
+        self._val_list[8] = self._servo_offsets[8] - self._thetas[2][2]
 
         #BR Lower. 
-        self._val_list[9] = self._servo_offsets[9] + self._thetas[3][2]
+        self._val_list[9] = self._servo_offsets[9] + self._thetas[3][0]
         #BR Upper
         self._val_list[10] = self._servo_offsets[10] + self._thetas[3][1]    
         #BR Shoulder, Formula flipped from the front
-        self._val_list[11] = self._servo_offsets[11] + self._thetas[3][0]     
+        self._val_list[11] = self._servo_offsets[11] + self._thetas[3][2]    
 
     def getServoAngles(self):
         return self._val_list
@@ -116,6 +147,10 @@ class Controllers:
     def servoDynamixel_angle(self):
         medium = self._val_list
         return medium
+    
+    def print_thetas(self):
+        return self._thetas
+        
 
 if __name__=="__main__":
     legEndpoints=np.array([[100,-100,87.5,1],[100,-100,-87.5,1],[-100,-100,87.5,1],[-100,-100,-87.5,1]])
@@ -125,11 +160,16 @@ if __name__=="__main__":
 
     # Get radian thetas, transform to integer servo angles
     # then, rotate servos
-    controller.servoRotate(thetas)
-
+    # controller.servoRotate(thetas)
+    Lai = controller.getDegreeAngles(thetas)
     # Get AngleValues for Debugging
-    svAngle = controller.getServoAngles()
-    print(svAngle)
-
+    # svAngle = controller.getServoAngles()
+    # print(svAngle)
+    # Lai = controller.print_thetas()
+    print(Lai)
+    # print(controller.getDegreeAngles)
     # #plot at the end
     kn.plotKinematics()
+    # a = controller.print_thetas
+    # print(a)
+    # print(La[1][1])

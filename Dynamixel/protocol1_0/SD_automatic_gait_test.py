@@ -13,6 +13,7 @@ import random
 import Kinematics.kinematics as kn
 import spotmicroai
 import servo_controller
+# import SD_servo_controller_test
 
 from multiprocessing import Process
 from Common.multiprocess_kb import KeyInterrupt
@@ -28,13 +29,13 @@ ADDR_MX_PRESENT_POSITION   = 36
 
 PROTOCOL_VERSION            = 1.0
 
-DXL_Motor = 3
+DXL_Motor = 4
 
 DXL_ID = []
 DXL_ID = [ i + 1 for i in range(DXL_Motor)]
 
 BAUDRATE                    = 1000000            
-DEVICENAME                  = '/dev/ttyUSB0'
+DEVICENAME                  = '/dev/ttyUSB1'
 
 TORQUE_ENABLE               = 1                
 TORQUE_DISABLE              = 0
@@ -95,7 +96,7 @@ def consoleClear():
 Lp = np.array([[iXf, -100, spurWidth, 1], [iXf, -100, -spurWidth, 1],
 [-50, -100, spurWidth, 1], [-50, -100, -spurWidth, 1]])
 
-motion=KinematicMotion(Lp)
+motion=KinematicMotion(Lp) 
 resetPose()
 
 trotting=TrottingGait()
@@ -183,7 +184,7 @@ def main(id, command_status):
             # kn.plotKinematics()
 
         robot.step()
-        consoleClear()
+        # consoleClear()
 
 
 if __name__ == "__main__":
