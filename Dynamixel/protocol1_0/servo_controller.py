@@ -3,9 +3,9 @@ sys.path.append("..")
 
 import Kinematics.kinematics as kn
 import numpy as np
-from adafruit_servokit import ServoKit
-import board
-import busio
+# from adafruit_servokit import ServoKit
+# import board
+# import busio
 import time
 
 class Controllers:
@@ -60,34 +60,6 @@ class Controllers:
     def angleToServo(self, La):
 
         self.getDegreeAngles(La)
-
-        # #FL Lower
-        # self._val_list[0] = self._servo_offsets[0] - 0
-        # #FL Upper
-        # self._val_list[1] = self._servo_offsets[1] - 0    
-        # #FL Shoulder
-        # self._val_list[2] = self._servo_offsets[2] - 0 
-
-        # #FR Lower
-        # self._val_list[3] = self._servo_offsets[3] + 0
-        # #FR Upper
-        # self._val_list[4] = self._servo_offsets[4] + 0    
-        # #FR Shoulder
-        # self._val_list[5] = self._servo_offsets[5] + 0
-
-        # #BL Lower
-        # self._val_list[6] = self._servo_offsets[6] - 0
-        # #BL Upper
-        # self._val_list[7] = self._servo_offsets[7] - 0    
-        # #BL Shoulder, Formula flipped from the front
-        # self._val_list[8] = self._servo_offsets[8] - 0
-
-        # #BR Lower. 
-        # self._val_list[9] = self._servo_offsets[9] + 0
-        # #BR Upper
-        # self._val_list[10] = self._servo_offsets[10] + 0
-        # #BR Shoulder, Formula flipped from the front
-        # self._val_list[11] = self._servo_offsets[11] + 0
 
            #FL Lower
         self._val_list[0] = self._servo_offsets[0] - self._thetas[0][0]
@@ -144,12 +116,7 @@ class Controllers:
                 else:
                     self._kit2.servo[x].angle = self._val_list[x]
     
-    def servoDynamixel_angle(self):
-        medium = self._val_list
-        return medium
-    
-    def print_thetas(self):
-        return self._thetas
+
         
 
 if __name__=="__main__":
