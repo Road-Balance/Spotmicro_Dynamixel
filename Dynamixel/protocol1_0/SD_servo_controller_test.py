@@ -31,14 +31,14 @@ ADDR_MX_PRESENT_POSITION   = 36
 PROTOCOL_VERSION            = 1.0
 
 BAUDRATE                    = 1000000            
-DEVICENAME                  = '/dev/ttyUSB0'
+DEVICENAME                  = 'COM4'
 
 TORQUE_ENABLE               = 1                
 TORQUE_DISABLE              = 0
 
-DXL_g_deg = []
-DXL_present_deg = []
-DXL_present_POSITION_VALUE = []
+# DXL_g_deg = []
+# DXL_present_deg = []
+# DXL_present_POSITION_VALUE = []
 
 portHandler = PortHandler(DEVICENAME)
 packetHandler = PacketHandler(PROTOCOL_VERSION)
@@ -59,9 +59,9 @@ class Dynamixel_Controllers:
         # self.TORQUE_ENABLE               = 1                
         # self.TORQUE_DISABLE              = 0
 
-        # self.DXL_goal_deg = []
-        # self.DXL_present_deg = []
-        # self.DXL_present_POSITION_VALUE = []
+        self.DXL_goal_deg = [0 for i in range(12)]
+        self.DXL_present_deg = []
+        self.DXL_present_POSITION_VALUE = []
         
         self._servo_offsets = [150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150]
         
@@ -111,7 +111,7 @@ class Dynamixel_Controllers:
     def EnableTorque(self, ET):
         
         for i in range(ET):
-            dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, i + 1, self.ADDR_MX_TORQUE_ENABLE, self.TORQUE_ENABLE)
+            dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, i + 1, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE)
             if dxl_comm_result != COMM_SUCCESS:
                 print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
             elif dxl_error != 0:
@@ -122,7 +122,7 @@ class Dynamixel_Controllers:
     def DisableTorque(self, DT):
 
         for i in range(DT):
-            dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, i + 1, self.ADDR_MX_TORQUE_ENABLE, self.TORQUE_DISABLE)
+            dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, i + 1, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE)
             if dxl_comm_result != COMM_SUCCESS:
                 print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
             elif dxl_error != 0:
@@ -131,17 +131,17 @@ class Dynamixel_Controllers:
     def WriteMotor(self, WM):
 
         for i in range(WM):
-            xl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, i + 1, self.ADDR_MX_GOAL_POSITION, self.DXL_goal_POSITION_VALUE[i])
+            dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, i + 1, ADDR_MX_GOAL_POSITION, self.DXL_goal_POSITION_VALUE[i])
             if dxl_comm_result != COMM_SUCCESS:
                 print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
             elif dxl_error != 0:
                 print("%s" % packetHandler.getRxPacketError(dxl_error))
                
 
-    def ReadMotor(self, M):
+    def ReadMotor(self, RM):
 
         for i in range(RM):
-            dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, i + 1, self.ADDR_MX_PRESENT_POSITION)
+            dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, i + 1, ADDR_MX_PRESENT_POSITION)
             if dxl_comm_result != COMM_SUCCESS:
                 print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
             elif dxl_error != 0:
@@ -168,8 +168,36 @@ class Dynamixel_Controllers:
     
     def AngleToServo(self, num):
 
-        for i in range(num):
-            self.DXL_goal_deg[i] = self._servo_offsets[i] - self._thetas[i/3][i%3] 
+        # for i in range(num):
+        #     self.DXL_goal_deg[i] = self._servo_offsets[i] - self._thetas[int(i/3)][int(i%3)] 
+
+                   #FL Lower
+        self.DXL_goal_deg[0] = self._servo_offsets[0] - self._thetas[0][0]
+        #FL Upper
+        self.DXL_goal_deg[1] = self._servo_offsets[1] - self._thetas[0][1]    
+        #FL Shoulder
+        self.DXL_goal_deg[2] = self._servo_offsets[2] - self._thetas[0][2]
+
+        #FR Lower
+        self.DXL_goal_deg[3] = self._servo_offsets[3] + self._thetas[1][0]
+        #FR Upper
+        self.DXL_goal_deg[4] = self._servo_offsets[4] + self._thetas[1][1]    
+        #FR Shoulder
+        self.DXL_goal_deg[5] = self._servo_offsets[5] + self._thetas[1][2]
+
+        #BL Lower
+        self.DXL_goal_deg[6] = self._servo_offsets[6] - self._thetas[2][0]
+        #BL Upper
+        self.DXL_goal_deg[7] = self._servo_offsets[7] - self._thetas[2][1]    
+        #BL Shoulder, Formula flipped from the front
+        self.DXL_goal_deg[8] = self._servo_offsets[8] - self._thetas[2][2]
+
+        #BR Lower. 
+        self.DXL_goal_deg[9] = self._servo_offsets[9] + self._thetas[3][0]
+        #BR Upper
+        self.DXL_goal_deg[10] = self._servo_offsets[10] + self._thetas[3][1]    
+        #BR Shoulder, Formula flipped from the front
+        self.DXL_goal_deg[11] = self._servo_offsets[11] + self._thetas[3][2] 
 
         return self.DXL_goal_deg
     
@@ -198,7 +226,7 @@ if __name__=="__main__":
     LaDian = kn.initIK(legEndpoints) #radians
     
     # set numbers of motor and ID
-    DXLMotor_N = 3
+    DXLMotor_N = 4
     DXL_ID = [ i + 1 for i in range(DXLMotor_N)]
     # DXL_ID = []
 
@@ -207,7 +235,7 @@ if __name__=="__main__":
     Goal_Degree = DXL_controller.AngleToServo(DXLMotor_N)
     Goal_Position_Value = DXL_controller.DegreeToDXLValue(Goal_Degree)
 
-    DXL_controller.EnableTorque()
+    DXL_controller.EnableTorque(DXLMotor_N)
 
     # write and read DXL_servo
     DXL_controller.WriteMotor(DXLMotor_N)
@@ -216,7 +244,7 @@ if __name__=="__main__":
     DXL_controller.ReadMotor(DXLMotor_N)
 
     # close the DXL_servo
-    DXL_controller.DisableTorque()
+    DXL_controller.DisableTorque(DXLMotor_N)
     DXL_controller.closeport()
         
    
