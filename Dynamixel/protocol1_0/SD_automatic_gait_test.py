@@ -114,8 +114,8 @@ def main(id, command_status):
         d=time.time()-rtime
 
         # robot height
-        height = 40
-
+        height = 30 #40
+ 
         # calculate robot step command from keyboard inputs
         result_dict = command_status.get()
         print(result_dict)

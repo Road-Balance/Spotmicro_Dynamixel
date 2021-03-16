@@ -74,9 +74,9 @@ class TrottingGait:
         self.bodyPos=(0,100,0)
         self.bodyRot=(0,0,0)
         self.t0=300 #0 # senseless i guess
-        self.t1=1200 #1000
+        self.t1=1400 #1200
         self.t2=300 #0
-        self.t3=200
+        self.t3=350 #200
         self.Sl=0.0
         self.Sw=0
         self.Sh=40 #100
