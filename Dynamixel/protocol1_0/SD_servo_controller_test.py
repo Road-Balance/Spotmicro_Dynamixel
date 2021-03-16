@@ -31,7 +31,7 @@ ADDR_MX_PRESENT_POSITION   = 36
 PROTOCOL_VERSION            = 1.0
 
 BAUDRATE                    = 1000000            
-DEVICENAME                  = 'COM4'
+DEVICENAME                  = '/dev/ttyUSB0'
 
 TORQUE_ENABLE               = 1                
 TORQUE_DISABLE              = 0
@@ -226,7 +226,7 @@ if __name__=="__main__":
     LaDian = kn.initIK(legEndpoints) #radians
     
     # set numbers of motor and ID
-    DXLMotor_N = 4
+    DXLMotor_N = 12
     DXL_ID = [ i + 1 for i in range(DXLMotor_N)]
     # DXL_ID = []
 
