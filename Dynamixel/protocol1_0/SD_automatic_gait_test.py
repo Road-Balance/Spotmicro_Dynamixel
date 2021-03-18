@@ -114,7 +114,7 @@ def main(id, command_status):
         d=time.time()-rtime
 
         # robot height
-        height = 30 #40
+        height = 35 #40
  
         # calculate robot step command from keyboard inputs
         result_dict = command_status.get()
@@ -128,7 +128,7 @@ def main(id, command_status):
         else:
             robot.feetPosition(Lp)
         #roll=-xr
-        roll=0
+        roll=0 
         robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
         bodyX=50+yr*10
         robot.bodyPosition((bodyX, 40+height, -ir))

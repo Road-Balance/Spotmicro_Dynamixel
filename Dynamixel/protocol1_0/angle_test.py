@@ -57,7 +57,7 @@ ADDR_MX_PRESENT_POSITION   = 36
 PROTOCOL_VERSION            = 1.0               # See which protocol version is used in the Dynamixel
 
 # set the number of dynamixel motor
-DXL_Motor = 3
+DXL_Motor = 12
 
 # Dynamixel motor 'AX-12A' unique number 
 # DXL_ID                      = 14
@@ -79,8 +79,8 @@ TORQUE_DISABLE              = 0                 # Value for disabling the torque
 # set position value of dynamixel motor                  
 # DXL_MINIMUM_POSITION_VALUE  = 0           # Dynamixel will rotate between this value
 # DXL_MAXIMUM_POSITION_VALUE1  = 512        # and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
-# DXL_goal_POSITION_VALUE = [ 512 for i in range(DXL_Motor)]
-DXL_goal_POSITION_VALUE = [582, 292, 310] # 1 positon value = 0.29 deg / max position value is 1023
+DXL_goal_POSITION_VALUE = [ 512 for i in range(DXL_Motor)]
+# DXL_goal_POSITION_VALUE = [582, 292, 310] # 1 positon value = 0.29 deg / max position value is 1023
 # DXL_MOVING_STATUS_THRESHOLD = 20                # Dynamixel moving status threshold
 
 # set positon value to degree

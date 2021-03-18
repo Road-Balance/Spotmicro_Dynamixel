@@ -146,13 +146,13 @@ class Dynamixel_Controllers:
                 print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
             elif dxl_error != 0:
                 print("%s" % packetHandler.getRxPacketError(dxl_error))
-            DXL_present_POSITION_VALUE.append(dxl_present_position)
+            self.DXL_present_POSITION_VALUE.append(dxl_present_position)
         print(" **** Read Present DXL Positon Value **** ") 
-        print(DXL_present_POSITION_VALUE)
-        DXL_present_deg = [ int(i * 0.29) for i in DXL_present_POSITION_VALUE ]
+        print(self.DXL_present_POSITION_VALUE)
+        DXL_present_deg = [ int(i * 0.29) for i in self.DXL_present_POSITION_VALUE ]
         print(" **** Read Present DXL Degree **** ")
         print(DXL_present_deg)
-        DXL_present_POSITION_VALUE.clear()
+        self.DXL_present_POSITION_VALUE.clear()
         DXL_present_deg.clear()
                  
 
