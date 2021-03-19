@@ -73,9 +73,9 @@ class TrottingGait:
         self.maxSl=2
         self.bodyPos=(0,100,0)
         self.bodyRot=(0,0,0)
-        self.t0=0 #0 # senseless i guess
+        self.t0=0 #0 #300 # senseless i guess
         self.t1=1000 #1200
-        self.t2=0 #0
+        self.t2=0 #0 #300
         self.t3=0 #200
         self.Sl=1.0
         self.Sw=0
