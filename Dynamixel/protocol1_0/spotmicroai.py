@@ -11,6 +11,7 @@ import math
 import numpy as np
 from Kinematics.kinematics import Kinematic 
 from enum import Enum
+from math import *
 
 class RobotState(Enum):
     OFF = 0     # don't do anything

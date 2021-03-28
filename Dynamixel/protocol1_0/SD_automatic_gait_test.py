@@ -9,6 +9,10 @@ import math
 import datetime as dt
 import keyboard
 import random
+import board
+import busio
+import adafruit_bno055
+
 
 import Kinematics.kinematics as kn
 import spotmicroai
@@ -22,6 +26,9 @@ from Kinematics.kinematicMotion import KinematicMotion, TrottingGait
 from dynamixel_sdk import *
 
 rtime=time.time()
+
+i2c_bus0 = busio.I2C(board.SCL_1, board.SDA_1)
+sensor = adafruit_bno055.BNO055_I2C(i2c_bus0)
 
 ADDR_MX_TORQUE_ENABLE      = 24               
 ADDR_MX_GOAL_POSITION      = 30
@@ -114,7 +121,7 @@ def main(id, command_status):
         d=time.time()-rtime
 
         # robot height
-        height = 35 #40
+        height = 30 #40
  
         # calculate robot step command from keyboard inputs
         result_dict = command_status.get()
@@ -129,9 +136,16 @@ def main(id, command_status):
             robot.feetPosition(Lp)
         #roll=-xr
         roll=0 
-        robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
+        # pitch = (sensor.euler[1]*math.pi)/180
+        pitch = -((sensor.euler[1]*math.pi)/180)
+        yaw = -((sensor.euler[0]*math.pi)/180)
+        # robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
+        robot.bodyRotation((roll,yaw,pitch))
         bodyX=50+yr*10
         robot.bodyPosition((bodyX, 40+height, -ir))
+
+        print(sensor.euler[1])
+        print((sensor.euler[1]*math.pi)/180)
 
         # Get current Angles for each motor
         LaDian = robot.getAngle()
