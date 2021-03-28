@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "../../../../Adafruit_CircuitPython_BNO055"
+		},
+		{
+			"path": "../.."
+		}
+	],
+	"settings": {}
+}

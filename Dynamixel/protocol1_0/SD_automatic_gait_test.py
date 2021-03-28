@@ -96,11 +96,16 @@ def consoleClear():
     # for mac and linux(here, os.name is 'posix') 
     else: 
         _ = system('clear') 
+a = 150
+b = 130         
+c = 60
 
 
+# Lp = np.array([[iXf, -100, spurWidth, 1], [iXf, -100, -spurWidth, 1],
+# [-50, -100, spurWidth, 1], [-50, -100, -spurWidth, 1]])
 
-Lp = np.array([[iXf, -100, spurWidth, 1], [iXf, -100, -spurWidth, 1],
-[-50, -100, spurWidth, 1], [-50, -100, -spurWidth, 1]])
+Lp = np.array([[a, -b, c, 1], [a, -b, -c, 1],
+[-120, -b, -c, 1], [-120, -b, c, 1]])
 
 motion=KinematicMotion(Lp) 
 resetPose()
@@ -136,13 +141,15 @@ def main(id, command_status):
             robot.feetPosition(Lp)
         #roll=-xr
         roll=0 
-        # pitch = (sensor.euler[1]*math.pi)/180
-        pitch = -((sensor.euler[1]*math.pi)/180)
-        yaw = -((sensor.euler[0]*math.pi)/180)
+        pitch = 0
+        yaw = 0
+        # pitch = -((sensor.euler[1]*math.pi)/180)
+        # yaw = -((sensor.euler[0]*math.pi)/180)
         # robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
         robot.bodyRotation((roll,yaw,pitch))
         bodyX=50+yr*10
         robot.bodyPosition((bodyX, 40+height, -ir))
+        # robot.bodyPosition((0, 0, 0))
 
         print(sensor.euler[1])
         print((sensor.euler[1]*math.pi)/180)

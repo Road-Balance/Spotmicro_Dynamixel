@@ -29,8 +29,8 @@ class Kinematic:
         self.l3=100
         self.l4=100
 
-        self.L = 140
-        self.W = 75
+        self.L = 240
+        self.W = 80
         
         #leg iterators. ex. LEG_BACK + LEG_LEFT -> array[2]
         self.LEG_FRONT = 0
