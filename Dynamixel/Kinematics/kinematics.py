@@ -50,7 +50,8 @@ class Kinematic:
                     [-np.sin(phi),0,np.cos(phi),0],[0,0,0,1]])
         Rz = np.array([[np.cos(psi),-np.sin(psi),0,0],
                     [np.sin(psi),np.cos(psi),0,0],[0,0,1,0],[0,0,0,1]])
-        Rxyz = Rx.dot(Ry.dot(Rz))
+        # Rxyz = Rx.dot(Ry.dot(Rz))
+        Rxyz = Rz.dot(Ry.dot(Rx))
 
         T = np.array([[0,0,0,xm],[0,0,0,ym],[0,0,0,zm],[0,0,0,0]])
         Tm = T+Rxyz
@@ -85,6 +86,28 @@ class Kinematic:
         theta2=atan2(z,G)-atan2(l4*sin(theta3),l3+l4*cos(theta3))
         
         return(theta1,theta2,theta3)
+
+    def legIK_(self,point):
+        (x,y,z)=(point[0],point[1],point[2])
+        (l1,l2,l3,l4)=(self.l1,self.l2,self.l3,self.l4)
+        try:        
+            F=sqrt(x**2+y**2-l1**2)
+        except ValueError:
+            print("Error in legIK with x {} y {} and l1 {}".format(x,y,l1))
+            F=l1
+        G=F-l2  
+        H=sqrt(G**2+z**2)
+        theta1=-atan2(y,x)-atan2(F,-l1)
+        
+        D=(H**2-l3**2-l4**2)/(2*l3*l4)
+        try:        
+            theta3=acos(D) 
+        except ValueError:
+            print("Error in legIK with x {} y {} and D {}".format(x,y,D))
+            theta3=0
+        theta2=atan2(z,G)-atan2(l4*sin(theta3),l3+l4*cos(theta3))
+        
+        return(-theta1,theta2,theta3)   
 
     def calcLegPoints(self,angles):
         (l1,l2,l3,l4)=(self.l1,self.l2,self.l3,self.l4)
@@ -169,8 +192,8 @@ class Kinematic:
         Ix=np.array([[-1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]])
         return np.array([self.legIK(np.linalg.inv(Tlf).dot(Lp[0])),
         self.legIK(Ix.dot(np.linalg.inv(Trf).dot(Lp[1]))),
-        self.legIK(np.linalg.inv(Tlb).dot(Lp[2])),
-        self.legIK(Ix.dot(np.linalg.inv(Trb).dot(Lp[3])))])
+        self.legIK_(np.linalg.inv(Tlb).dot(Lp[2])),
+        self.legIK_(Ix.dot(np.linalg.inv(Trb).dot(Lp[3])))])
 
 # Inverse Kinematics
 def initIK(Lp):
