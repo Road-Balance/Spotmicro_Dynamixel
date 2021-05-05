@@ -36,7 +36,7 @@ class Controllers:
         self.SIM_LEG_THETA2 = 1
         self.SIM_LEG_THETA3 = 2
 
-        # [0]~[2] : 왼쪽 앞 다리 // [3]~[5] : 오른쪽 앞 다리 // [6]~[8] : 왼쪽 뒷 다리 // [9]~[11] : 오른쪽 뒷 다리
+        # [0]~[2] : FL // [3]~[5] : FR // [6]~[8] : BL // [9]~[11] : BR
         # centered position perpendicular to the ground
         self._servo_offsets = [150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150]
         

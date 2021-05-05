@@ -27,9 +27,11 @@ from dynamixel_sdk import *
 
 rtime=time.time()
 
+# BNO055 ( IMU )
 i2c_bus0 = busio.I2C(board.SCL_1, board.SDA_1)
 sensor = adafruit_bno055.BNO055_I2C(i2c_bus0)
 
+# Dynamixel address
 ADDR_MX_TORQUE_ENABLE      = 24               
 ADDR_MX_GOAL_POSITION      = 30
 ADDR_MX_PRESENT_POSITION   = 36
@@ -42,19 +44,17 @@ DEVICENAME                  = '/dev/ttyUSB0'
 TORQUE_ENABLE               = 1                
 TORQUE_DISABLE              = 0
 
-
-
-# DXL_goal_POSITION_VALUE = [ 512 for i in range(DXL_Motor)]
-
-# DXL_goal_deg = []
-# DXL_present_POSITION_VALUE = []
-# DXL_goal_deg = [ int(i * 0.29) for i in DXL_goal_POSITION_VALUE ]
-
+# setting port and protocol version
 portHandler = PortHandler(DEVICENAME)
 packetHandler = PacketHandler(PROTOCOL_VERSION)
 
+
 DXL_controller = Dynamixel_Controllers()
+
+# setting the DXL_Motor
 DXL_controller.DynamixelSetting()
+
+
 
 def reset():
     global rtime
@@ -82,6 +82,8 @@ iXf=120
 walk=False
 
 def resetPose():
+    
+    # joystick?
     # TODO: globals are bad
     global joy_x, joy_z, joy_y, joy_rz, joy_z
     joy_x, joy_y, joy_z, joy_rz = 128, 128, 128, 128
@@ -96,14 +98,14 @@ def consoleClear():
     # for mac and linux(here, os.name is 'posix') 
     else: 
         _ = system('clear') 
-# a = 150
-# b = 130         
-# c = 60
 
-
+# robot foot position
 Lp = np.array([[iXf, -100, spurWidth, 1], [iXf, -100, -spurWidth, 1],
 [-80, -100, spurWidth, 1], [-80, -100, -spurWidth, 1]])
 
+# a = 150
+# b = 130         
+# c = 60
 # Lp = np.array([[a, -b, c, 1], [a, -b, -c, 1],
 # [-120, -b, -c, 1], [-120, -b, c, 1]])
 
@@ -140,20 +142,22 @@ def main(id, command_status):
         else:
             robot.feetPosition(Lp)
         # roll=-xr
+
+        # robot rotation 
+        # robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
         # roll=0 
         pitch = 0
         yaw = 0
         # pitch = -((sensor.euler[1]*math.pi)/180)
         # yaw = -((sensor.euler[0]*math.pi)/180)
         roll = -((sensor.euler[2]*math.pi)/180)
-        # robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
         robot.bodyRotation((roll,yaw,pitch))
+        
+        # robot position
         bodyX=50+yr*10
         robot.bodyPosition((bodyX, 40+height, -ir))
         # robot.bodyPosition((0, 0, 0))
 
-        print(sensor.euler[1])
-        print((sensor.euler[1]*math.pi)/180)
 
         # Get current Angles for each motor
         LaDian = robot.getAngle()
@@ -161,51 +165,24 @@ def main(id, command_status):
         
         # First Step doesn't contains jointAngles
         if len(LaDian):
-            # Real Actuators
-            # controller.servoRotate(jointAngles)
+     
 
+            # ladian to degree
             thetas = DXL_controller.LadianToAngles(LaDian)
+
+            # adjust robot servo
             Goal_Degree = DXL_controller.AngleToServo(DXLMotor_N)
+
+            # degree to dynamixel value
             Goal_Position_Value = DXL_controller.DegreeToDXLValue(Goal_Degree)
 
-            # controller.angleToServo(jointAngles)
-            # DXL_goal_deg = controller.servoDynamixel_angle()
-            # DXL_goal_POSITION_VALUE = [ int(i / 0.29) for i in DXL_goal_deg ]
 
+            # Real Actuators
             DXL_controller.WriteMotor(DXLMotor_N)
             print(" **** Goal Degree **** ")
             print(Goal_Degree)
-            # DXL_controller.ReadMotor(DXLMotor_N)
-            # for i in range(DXL_Motor):
-            #     dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, i + 1, ADDR_MX_GOAL_POSITION, DXL_goal_POSITION_VALUE[i])
-            #     if dxl_comm_result != COMM_SUCCESS:
-            #         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-            #     elif dxl_error != 0:
-            #         print("%s" % packetHandler.getRxPacketError(dxl_error))
-            # print(" *** goal degree *** ")
-            # print(DXL_goal_deg)
-
-            # for i in range(DXL_Motor):
-            #     dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, i + 1, ADDR_MX_PRESENT_POSITION)
-            #     if dxl_comm_result != COMM_SUCCESS:
-            #         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-            #     elif dxl_error != 0:
-            #         print("%s" % packetHandler.getRxPacketError(dxl_error))
-            #     DXL_present_POSITION_VALUE.append(dxl_present_position)
-            # print(" *** present positon value *** ") 
-            # print(DXL_present_POSITION_VALUE)   
-            # DXL_present_deg = [ int(i * 0.29) for i in DXL_goal_POSITION_VALUE ]
-            # print(" *** present degree *** ")
-            # print(DXL_present_deg)
-
-            # for i in range(DXL_Motor):
-            #     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, i + 1, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE)
-            #     if dxl_comm_result != COMM_SUCCESS:
-            #         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-            #     elif dxl_error != 0:
-            #         print("%s" % packetHandler.getRxPacketError(dxl_error))
-
-            # portHandler.closePort()          
+        
+            
             
             # # Plot Robot Pose into Matplotlib for Debugging
             # TODO: Matplotplib animation
@@ -218,36 +195,17 @@ def main(id, command_status):
 
 if __name__ == "__main__":
     try:
+        # motor num
         DXLMotor_N = 12
 
+        # motor id from LF to RB
         DXL_ID = []
         DXL_ID = [ i + 1 for i in range(DXLMotor_N)]
         
-        # if portHandler.openPort():
-        #     print("Succeeded to open the port")
-        # else:
-        #     print("Failed to open the port")
-        #     print("Press any key to terminate...") 
-        #     getch()
-        #     quit()
-    
-        # if portHandler.setBaudRate(BAUDRATE):
-        #     print("Succeeded to change the baudrate")
-        # else:
-        #     print("Failed to change the baudrate")
-        #     print("Press any key to terminate...")
-        #     getch()
-        #     quit()
+        # torque enable
         DXL_controller.EnableTorque(DXLMotor_N)
 
-        # for i in range(DXL_Motor):
-        #     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, i + 1, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE)
-        #     if dxl_comm_result != COMM_SUCCESS:
-        #         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-        #     elif dxl_error != 0:
-        #         print("%s" % packetHandler.getRxPacketError(dxl_error))
-        #     else:
-        #         print("Dynamixel#%d has been successfully connected" % i)
+
         
         # Keyboard input Process
         KeyInputs = KeyInterrupt()
@@ -258,16 +216,10 @@ if __name__ == "__main__":
         main(2, KeyInputs.command_status)
         
 
+        # torque disable
         DXL_controller.DisableTorque(DXLMotor_N)
         DXL_controller.closeport()
-        # for i in range(DXL_Motor):
-        #     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, i + 1, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE)
-        #     if dxl_comm_result != COMM_SUCCESS:
-        #         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-        #     elif dxl_error != 0:
-        #         print("%s" % packetHandler.getRxPacketError(dxl_error))
 
-        # portHandler.closePort()
 
         print("terminate KeyBoard Input process")
         if KeyProcess.is_alive():
