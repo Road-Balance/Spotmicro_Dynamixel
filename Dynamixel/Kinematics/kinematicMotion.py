@@ -152,8 +152,8 @@ class TrottingGait:
         Ry=-170
         # r=np.array([self.calcLeg(td,Fx,Fy,spf),self.calcLeg(t2,Fx,Fy,-spf),self.calcLeg(rt2,Rx,Ry,spr),self.calcLeg(rtd,Rx,Ry,-spr)])
         r=np.array([
-            self.calcLeg(td,90,-150,90),
-            self.calcLeg(t2,90,-150,-90),
+            self.calcLeg(td,120,-150,90),
+            self.calcLeg(t2,120,-150,-90),
             self.calcLeg(rt2,-150,-150,90),
             self.calcLeg(rtd,-150,-150,-90)
         ])
