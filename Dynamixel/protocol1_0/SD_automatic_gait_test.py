@@ -140,13 +140,13 @@ def main(id, command_status):
 
         # robot rotation 
         # robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
-        # roll=0 
+        roll=0 
         pitch = 0
         yaw = 0
         # pitch = -((sensor.euler[1]*math.pi)/180)
         # yaw = -((sensor.euler[0]*math.pi)/180)
-        roll = -((sensor.euler[2]*math.pi)/180)
-        robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
+        # roll = -((sensor.euler[2]*math.pi)/180)
+        # robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
         robot.bodyRotation((roll,yaw,pitch))
         # bodyX=50+yr*10
         # robot.bodyPosition((bodyX, 40+height, -ir))

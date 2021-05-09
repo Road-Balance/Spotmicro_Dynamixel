@@ -74,17 +74,17 @@ class TrottingGait:
         self.bodyPos=(0,100,0)
         self.bodyRot=(0,0,0)
         self.t0=300 #0 #300 # senseless i guess
-        self.t1=1200 #1200
+        self.t1=800 #1200
         self.t2=300 #0 #300
-        self.t3=350 #200
+        self.t3=800 #200
         self.Sl=0
         self.Sw=0
-        self.Sh=70 #100
+        self.Sh=30 #100
         self.Sa=0
         self.Spf=87
         self.Spr=77
-        self.Fo=120
-        self.Ro=50
+        self.Fo=70
+        self.Ro=-100
 
         self.Rc=[-50,0,0,1] # rotation center
 
@@ -148,8 +148,14 @@ class TrottingGait:
         rt2=(t*1000-Tt2-rd)%Tt
         Fx=self.Fo
         Rx=-1*self.Ro
-        Fy=-100
-        Ry=-100
-        r=np.array([self.calcLeg(td,Fx,Fy,spf),self.calcLeg(t2,Fx,Fy,-spf),self.calcLeg(rt2,Rx,Ry,spr),self.calcLeg(rtd,Rx,Ry,-spr)])
+        Fy=-170
+        Ry=-170
+        # r=np.array([self.calcLeg(td,Fx,Fy,spf),self.calcLeg(t2,Fx,Fy,-spf),self.calcLeg(rt2,Rx,Ry,spr),self.calcLeg(rtd,Rx,Ry,-spr)])
+        r=np.array([
+            self.calcLeg(td,70,-170,90),
+            self.calcLeg(t2,70,-170,-90),
+            self.calcLeg(rt2,-120,-170,90),
+            self.calcLeg(rtd,-120,-170,-90)
+        ])
         #print(r)
         return r
