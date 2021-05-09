@@ -74,9 +74,9 @@ class TrottingGait:
         self.bodyPos=(0,100,0)
         self.bodyRot=(0,0,0)
         self.t0=300 #0 #300 # senseless i guess
-        self.t1=800 #1200
+        self.t1=900 #1200
         self.t2=300 #0 #300
-        self.t3=800 #200
+        self.t3=400 #200
         self.Sl=0
         self.Sw=0
         self.Sh=30 #100
@@ -152,10 +152,10 @@ class TrottingGait:
         Ry=-170
         # r=np.array([self.calcLeg(td,Fx,Fy,spf),self.calcLeg(t2,Fx,Fy,-spf),self.calcLeg(rt2,Rx,Ry,spr),self.calcLeg(rtd,Rx,Ry,-spr)])
         r=np.array([
-            self.calcLeg(td,70,-170,90),
-            self.calcLeg(t2,70,-170,-90),
-            self.calcLeg(rt2,-120,-170,90),
-            self.calcLeg(rtd,-120,-170,-90)
+            self.calcLeg(td,90,-150,90),
+            self.calcLeg(t2,90,-150,-90),
+            self.calcLeg(rt2,-150,-150,90),
+            self.calcLeg(rtd,-150,-150,-90)
         ])
         #print(r)
         return r
