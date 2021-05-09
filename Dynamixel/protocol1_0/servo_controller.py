@@ -120,7 +120,7 @@ class Controllers:
         
 
 if __name__=="__main__":
-    legEndpoints=np.array([[100,-100,87.5,1],[100,-100,-87.5,1],[-100,-100,87.5,1],[-100,-100,-87.5,1]])
+    legEndpoints=np.array([[70,-170,57.5,1],[70,-170, -57.5,1],[-100,-170,57.5,1],[-100,-170,-57.5,1]])
     thetas = kn.initIK(legEndpoints) #radians
     
     controller = Controllers()

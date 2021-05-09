@@ -72,7 +72,7 @@ speed1=322
 speed2=237
 speed3=436
 
-spurWidth=robot.W/2+20
+spurWidth=robot.W/2+50
 stepLength=0
 stepHeight=72
 
@@ -101,11 +101,10 @@ def consoleClear():
 # c = 60
 
 
-Lp = np.array([[iXf, -100, spurWidth, 1], [iXf, -100, -spurWidth, 1],
-[-80, -100, spurWidth, 1], [-80, -100, -spurWidth, 1]])
+Lp = np.array([[iXf, -170, spurWidth, 1], [iXf, -170, -spurWidth, 1],
+[-120, -170, spurWidth, 1], [-120, -170, -spurWidth, 1]])
 
-# Lp = np.array([[a, -b, c, 1], [a, -b, -c, 1],
-# [-120, -b, -c, 1], [-120, -b, c, 1]])
+# Lp = np.array([[120, -140, 90, 1],[120, -140, -90, 1],[-120, -140, 90, 1],[-120, -140, -90, 1]])
 
 motion=KinematicMotion(Lp) 
 resetPose()
@@ -146,11 +145,11 @@ def main(id, command_status):
         # pitch = -((sensor.euler[1]*math.pi)/180)
         # yaw = -((sensor.euler[0]*math.pi)/180)
         roll = -((sensor.euler[2]*math.pi)/180)
-        # robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
+        robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
         robot.bodyRotation((roll,yaw,pitch))
-        bodyX=50+yr*10
-        robot.bodyPosition((bodyX, 40+height, -ir))
-        # robot.bodyPosition((0, 0, 0))
+        # bodyX=50+yr*10
+        # robot.bodyPosition((bodyX, 40+height, -ir))
+        robot.bodyPosition((0, 0, 0))
 
         print(sensor.euler[1])
         print((sensor.euler[1]*math.pi)/180)

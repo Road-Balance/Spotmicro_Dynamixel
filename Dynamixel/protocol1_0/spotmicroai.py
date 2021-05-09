@@ -70,7 +70,7 @@ class Robot:
         rayLen = 12
         rayStartLen=0.12
         
-        self.W=75+5+40
+        self.W=80
 
         self.dirs = [[-1, 1, 1], [1, 1, 1], [-1, 1, 1], [1, 1, 1]]
         self.roll=0
