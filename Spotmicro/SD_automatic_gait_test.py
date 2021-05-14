@@ -17,7 +17,6 @@ import adafruit_bno055
 import Kinematics.kinematics as kn
 import spotmicroai
 from SD_servo_controller_test import Dynamixel_Controllers
-# import SD_servo_controller_test
 
 from multiprocessing import Process
 from Common.multiprocess_kb import KeyInterrupt
