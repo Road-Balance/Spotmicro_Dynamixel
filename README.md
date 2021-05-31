@@ -2,7 +2,7 @@
 
 
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/71168984/118210697-c903b900-b4a5-11eb-9b49-61359dafa23c.jpg" width="400" />
+    <img src="https://user-images.githubusercontent.com/71168984/118210697-c903b900-b4a5-11eb-9b49-61359dafa23c.jpg" width="800" />
 </p>
 
 ## Description_repository
