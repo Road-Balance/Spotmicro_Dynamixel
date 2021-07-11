@@ -13,13 +13,14 @@ from multiprocessing import Process, Queue
 key_value_default = {'w': 0, 'a': 0, 's': 0, 'd': 0, 'q': 0, 'e': 0}
 control_offset = {'IDstepLength': 0.0, 'IDstepWidth': 0.0, 'IDstepAlpha': 0.0}
 
-class KeyInterrupt(): 
 
-    def __init__(self): 
+class KeyInterrupt():
+
+    def __init__(self):
         # How many times Keys Pushed
         self.key_status = Queue()
         self.key_status.put(key_value_default)
-        
+
         # Calculate Offset based on Key Status
         self.command_status = Queue()
         self.command_status.put(control_offset)
@@ -31,7 +32,7 @@ class KeyInterrupt():
         self.YAW_STEP = 3.0
 
     def resetStatus(self):
-        result_dict = self.key_status.get()
+        # result_dict = self.key_status.get()
         self.key_status.put(key_value_default)
 
     def keyCounter(self, character):
@@ -44,17 +45,20 @@ class KeyInterrupt():
     def calcRbStep(self):
         result_dict = self.key_status.get()
         command_dict = self.command_status.get()
-        command_dict['IDstepLength'] = self.X_STEP * result_dict['s'] - self.X_STEP * result_dict['w']
-        command_dict['IDstepWidth'] = self.Y_STEP * result_dict['d'] - self.Y_STEP * result_dict['a']
-        command_dict['IDstepAlpha'] = self.YAW_STEP * result_dict['q'] - self.YAW_STEP * result_dict['e']
+        command_dict['IDstepLength'] = self.X_STEP * \
+            result_dict['s'] - self.X_STEP * result_dict['w']
+        command_dict['IDstepWidth'] = self.Y_STEP * \
+            result_dict['d'] - self.Y_STEP * result_dict['a']
+        command_dict['IDstepAlpha'] = self.YAW_STEP * \
+            result_dict['q'] - self.YAW_STEP * result_dict['e']
 
         self.key_status.put(result_dict)
         self.command_status.put(command_dict)
 
-    # Activated when Key Pressed, Doesn't support Hotkey 
+    # Activated when Key Pressed, Doesn't support Hotkey
     # Doesn't support more than two key pressing
     def keyInterrupt(self, id, key_status, command_status):
-        
+
         was_pressed = False
 
         while True:
@@ -92,6 +96,8 @@ class KeyInterrupt():
             self.calcRbStep()
 
 # Test Endless While Loop
+
+
 def testWhile(id, command_status):
     while True:
         result_dict = command_status.get()
@@ -103,7 +109,8 @@ def testWhile(id, command_status):
 if __name__ == "__main__":
     try:
         KeyTest = KeyInterrupt()
-        KeyProcess = Process(target=KeyTest.keyInterrupt, args=(1, KeyTest.key_status, KeyTest.command_status))
+        KeyProcess = Process(target=KeyTest.keyInterrupt, args=(
+            1, KeyTest.key_status, KeyTest.command_status))
 
         KeyProcess.start()
 
