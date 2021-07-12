@@ -1,19 +1,45 @@
 # Spotmicro_Dynamixel
 
+Quadruped Robot with [Robotis Dynamixel](https://www.robotis.us/dynamixel/) and our log for Full tutorial.
+
 
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/12381733/120224373-4b4df480-c27e-11eb-9985-db28ba9be98b.png" width="500" />
+    <img src="./Images/bg_img.jpg" width="325" />
+    <img src="./Images/walking.gif" width="400" />
 </p>
 
-## Description_repository
+## Folder Explanation
 
-### BNO_055
-IMU sensor test 
+```
+├─BNO_055
+├─Common
+├─Dynamixel
+├─Images
+├─Kinematics
+├─Parts
+├─Simulation
+└─Spotmicro
+    └─SD_automatic_gait_test.py
+```
+
+* `BNO_055` : Adafruit IMU Sensor test
+* `Dynamixel` : Codes for Robotis Dynamixel, Motor Protocol with Python API included. ([AX-12a](https://emanual.robotis.com/docs/en/dxl/ax/ax-12a/) used in this project)
+* `Kinematics` : Codes for how to explain Quadruped robot into Python code. Basic Forward/Backward Kinematics implemented
+* `Parts` : Modeling Files for 3D printer.
+
+## Modeling Parts printing
+
+<p align="center">
+    <img src="./Images/RB_Lo.jpg" width="500" />
+</p>
+
+All modeling files located in **Parts** folder.
+And there's also [assembly description written in notion](https://www.notion.so/Hardware-00238903ad6c4186bfc3acba8eadde08)
 
 ### Common
 Keyboard operation
 
-### Dynamixel
+### 
 Dynamixel motor repository
 ```
 Dynamixel_sdk
@@ -35,7 +61,7 @@ SD_automatic_gait_test.py
 > SD_automatic_gait_test.py
 * Make the robot walk using keyboard 
 
-## Example
+## 
 
 
 ---
