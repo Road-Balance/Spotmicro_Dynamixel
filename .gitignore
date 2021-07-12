@@ -1,4 +1,6 @@
 *.pyc
+*.json
+
 
 .vscode/
 

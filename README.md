@@ -8,7 +8,7 @@ Quadruped Robot with [Robotis Dynamixel](https://www.robotis.us/dynamixel/) and 
     <img src="./Images/walking.gif" width="400" />
 </p>
 
-## Folder Explanation
+## Folder Structure
 
 ```
 ├─BNO_055
@@ -27,42 +27,55 @@ Quadruped Robot with [Robotis Dynamixel](https://www.robotis.us/dynamixel/) and 
 * `Kinematics` : Codes for how to explain Quadruped robot into Python code. Basic Forward/Backward Kinematics implemented
 * `Parts` : Modeling Files for 3D printer.
 
-## Modeling Parts printing
+## Print and Assemble Modeling Parts
+
+* Print all Parts then assemble as below instructions.
+
+Here's Full description about assemble.
 
 <p align="center">
-    <img src="./Images/RB_Lo.jpg" width="500" />
+    <img src="./Images/RB_Lo.jpg" width="400" />
 </p>
 
 All modeling files located in **Parts** folder.
 And there's also [assembly description written in notion](https://www.notion.so/Hardware-00238903ad6c4186bfc3acba8eadde08)
 
-### Common
-Keyboard operation
+## Assemble Electronic parts and test
 
-### 
-Dynamixel motor repository
-```
-Dynamixel_sdk
-protocol1_0
-protocol2_0
-```
+There's also notion notes for all parts
 
-### Spotmicro
-Real robot Usage
+* [Dynamixel SDK](https://www.notion.so/Dynamixel-SDK-manual-f381e2eec2bb48c584fdff846843fd3f)
+* [Dynamixel Example Code](https://www.notion.so/Dynamixel-Example-Code-c2bf59e9148e48b68ceca86c588ff980)
+* [IMU](https://www.notion.so/IMU-BNO055-3ae07ede93fa465abe7360f2c616fd24)
 
-```
-SD_servo_controller_test.py
-SD_automatic_gait_test.py
-```
+## Kinematics
 
-> SD_servo_controller_test.py
-* Operate respective Dynamixel motor 
+You must be familliar with Robot Structure and its moving mechanism First.
+And mostly it's called as **Kinematics**
+Run codes in **Kinematics** folder. And refer [this page](https://www.notion.so/Kinematics-aa0c94412ab840ef82aa4bf352ae69d1)
 
-> SD_automatic_gait_test.py
+## Run Real Robot
+
 * Make the robot walk using keyboard 
 
-## 
+```
+cd Spotmicro
+python SD_automatic_gait_test.py
+```
 
+* Operate respective Dynamixel motor 
+
+```
+cd Spotmicro
+python SD_servo_controller_test.py
+```
+
+## Pose stabilization also implemented.
+
+<p align="center">
+    <img src="./Images/pose_pitch.gif" height="250" />
+    <img src="./Images/pose_roll.gif" height="250" />
+</p>
 
 ---
 
