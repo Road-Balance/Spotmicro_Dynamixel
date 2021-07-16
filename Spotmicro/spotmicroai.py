@@ -7,21 +7,21 @@ from Kinematics.kinematics import Kinematic
 from enum import Enum
 import numpy as np
 import time
+
 # import sys
 # sys.path.append("..")
 
 
 class RobotState(Enum):
-    OFF = 0     # don't do anything
-    READY = 1   # compact, legs together, waiting
-    STAND = 2   # standing, feet to the ground
+    OFF = 0  # don't do anything
+    READY = 1  # compact, legs together, waiting
+    STAND = 2  # standing, feet to the ground
     TROTTING_GAIT = 3  # legs alway moving up/down 0/3,1/2 / 2 Step
-    CRAWL = 4   # 4 Stepped, 1,2,3,0
+    CRAWL = 4  # 4 Stepped, 1,2,3,0
     CRAWL2 = 5  # 4 Stepped, Back first, 2,1,3,0
 
 
 class Robot:
-
     def __init__(self, useFixedBase=False, useStairs=True, resetFunc=None):
 
         # Simulation Configuration
@@ -31,7 +31,7 @@ class Robot:
         self.debugLidar = False
         self.rotateCamera = False
         self.debug = False
-        self.fixedTimeStep = 1. / 550
+        self.fixedTimeStep = 1.0 / 550
         self.numSolverIterations = 200
         self.useFixedBase = useFixedBase
         self.useStairs = useStairs
@@ -43,7 +43,7 @@ class Robot:
 
         # Parameters for Servos - still wrong
         self.kp = 0.045  # 0.012
-        self.kd = .4  # .2
+        self.kd = 0.4  # .2
         self.maxForce = 25.0
 
         self.angles = []
@@ -76,8 +76,14 @@ class Robot:
         self.dirs = [[-1, 1, 1], [1, 1, 1], [-1, 1, 1], [1, 1, 1]]
         self.roll = 0
 
-        self.Lp = np.array([[120, -100, self.W/2, 1], [120, -100, -self.W/2, 1],
-                            [-50, -100, self.W/2, 1], [-50, -100, -self.W/2, 1]])
+        self.Lp = np.array(
+            [
+                [120, -100, self.W / 2, 1],
+                [120, -100, -self.W / 2, 1],
+                [-50, -100, self.W / 2, 1],
+                [-50, -100, -self.W / 2, 1],
+            ]
+        )
 
         self.kin = Kinematic()
         self.ref_time = time.time()
@@ -130,7 +136,7 @@ class Robot:
 
     def step(self):
 
-        if (self.useRealTime):
+        if self.useRealTime:
             self.t = time.time() - self.ref_time
         else:
             self.t = self.t + self.fixedTimeStep
@@ -148,7 +154,7 @@ class Robot:
         # print(self.angles)
         # print([ (self.angles * 180 / 3.1415) for singleFootAngle in angles for angle in singleFootAngle ])
 
-        if (self.useRealTime == False):
+        if self.useRealTime == False:
             # p.stepSimulation()
             time.sleep(self.fixedTimeStep)
 

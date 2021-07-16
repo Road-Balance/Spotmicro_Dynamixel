@@ -1,6 +1,7 @@
 import numpy as np
 import time
-import datetime as dtd
+
+# import datetime as dtd
 import board
 import busio
 import adafruit_bno055
@@ -10,8 +11,10 @@ from multiprocessing import Process
 from Common.multiprocess_kb import KeyInterrupt
 from Kinematics.kinematicMotion import KinematicMotion, TrottingGait
 from dynamixel_sdk import PortHandler, PacketHandler
+
 import os
-import sys
+
+# import sys
 from os import system, name
 
 # sys.path.append("..")
@@ -38,7 +41,7 @@ ADDR_MX_PRESENT_POSITION = 36
 PROTOCOL_VERSION = 1.0
 
 BAUDRATE = 1000000
-DEVICENAME = '/dev/ttyUSB0'
+DEVICENAME = "/dev/ttyUSB0"
 
 TORQUE_ENABLE = 1
 TORQUE_DISABLE = 0
@@ -71,7 +74,7 @@ speed1 = 322
 speed2 = 237
 speed3 = 436
 
-spurWidth = robot.W/2+50
+spurWidth = robot.W / 2 + 50
 stepLength = 0
 stepHeight = 72
 
@@ -88,22 +91,29 @@ def resetPose():
     global joy_x, joy_z, joy_y, joy_rz, joy_z
     joy_x, joy_y, joy_z, joy_rz = 128, 128, 128, 128
 
+
 # define our clear function
 
 
 def consoleClear():
 
     # for windows
-    if name == 'nt':
-        _ = system('cls')
+    if name == "nt":
+        _ = system("cls")
 
     # for mac and linux(here, os.name is 'posix')
     else:
-        _ = system('clear')
+        _ = system("clear")
 
 
-Lp = np.array([[iXf, -170, spurWidth, 1], [iXf, -170, -spurWidth, 1],
-               [-120, -170, spurWidth, 1], [-120, -170, -spurWidth, 1]])
+Lp = np.array(
+    [
+        [iXf, -170, spurWidth, 1],
+        [iXf, -170, -spurWidth, 1],
+        [-120, -170, spurWidth, 1],
+        [-120, -170, -spurWidth, 1],
+    ]
+)
 
 # Lp = np.array([[120, -140, 90, 1],[120, -140, -90, 1],[-120, -140, 90, 1],[-120, -140, -90, 1]])
 
@@ -124,7 +134,7 @@ def main(id, command_status):
 
         # ir = xr/(math.pi/180)
 
-        d = time.time()-rtime
+        d = time.time() - rtime
 
         # robot height
         # height = 30  # 40
@@ -135,8 +145,8 @@ def main(id, command_status):
         command_status.put(result_dict)
 
         # wait 3 seconds to start
-        if result_dict['StartStepping']:
-            currentLp = trotting.positions(d-3, result_dict)
+        if result_dict["StartStepping"]:
+            currentLp = trotting.positions(d - 3, result_dict)
             robot.feetPosition(currentLp)
         else:
             robot.feetPosition(Lp)
@@ -202,8 +212,10 @@ if __name__ == "__main__":
 
         # Keyboard input Process
         KeyInputs = KeyInterrupt()
-        KeyProcess = Process(target=KeyInputs.keyInterrupt, args=(
-            1, KeyInputs.key_status, KeyInputs.command_status))
+        KeyProcess = Process(
+            target=KeyInputs.keyInterrupt,
+            args=(1, KeyInputs.key_status, KeyInputs.command_status),
+        )
         KeyProcess.start()
 
         # Main Process

@@ -1,7 +1,9 @@
 from Kinematics import kinematics as kn
 from dynamixel_sdk import PortHandler, PacketHandler, COMM_SUCCESS
+
 # import time
 import numpy as np
+
 # import sys
 # import os
 
@@ -33,7 +35,7 @@ ADDR_MX_PRESENT_POSITION = 36
 PROTOCOL_VERSION = 1.0
 
 BAUDRATE = 1000000
-DEVICENAME = '/dev/ttyUSB0'
+DEVICENAME = "/dev/ttyUSB0"
 
 TORQUE_ENABLE = 1
 TORQUE_DISABLE = 0
@@ -65,8 +67,20 @@ class Dynamixel_Controllers:
         self.DXL_present_deg = []
         self.DXL_present_POSITION_VALUE = []
 
-        self._servo_offsets = [150, 150, 150, 150,
-                               150, 150, 150, 150, 150, 150, 150, 150]
+        self._servo_offsets = [
+            150,
+            150,
+            150,
+            150,
+            150,
+            150,
+            150,
+            150,
+            150,
+            150,
+            150,
+            150,
+        ]
 
     def DynamixelSetting(self):
 
@@ -110,7 +124,8 @@ class Dynamixel_Controllers:
 
         for i in range(ET):
             dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(
-                portHandler, i + 1, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE)
+                portHandler, i + 1, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE
+            )
             if dxl_comm_result != COMM_SUCCESS:
                 print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
             elif dxl_error != 0:
@@ -122,7 +137,8 @@ class Dynamixel_Controllers:
 
         for i in range(DT):
             dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(
-                portHandler, i + 1, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE)
+                portHandler, i + 1, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE
+            )
             if dxl_comm_result != COMM_SUCCESS:
                 print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
             elif dxl_error != 0:
@@ -132,7 +148,11 @@ class Dynamixel_Controllers:
 
         for i in range(WM):
             dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(
-                portHandler, i + 1, ADDR_MX_GOAL_POSITION, self.DXL_goal_POSITION_VALUE[i])
+                portHandler,
+                i + 1,
+                ADDR_MX_GOAL_POSITION,
+                self.DXL_goal_POSITION_VALUE[i],
+            )
             if dxl_comm_result != COMM_SUCCESS:
                 print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
             elif dxl_error != 0:
@@ -141,8 +161,13 @@ class Dynamixel_Controllers:
     def ReadMotor(self, RM):
 
         for i in range(RM):
-            dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(
-                portHandler, i + 1, ADDR_MX_PRESENT_POSITION)
+            (
+                dxl_present_position,
+                dxl_comm_result,
+                dxl_error,
+            ) = packetHandler.read2ByteTxRx(
+                portHandler, i + 1, ADDR_MX_PRESENT_POSITION
+            )
             if dxl_comm_result != COMM_SUCCESS:
                 print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
             elif dxl_error != 0:
@@ -150,8 +175,7 @@ class Dynamixel_Controllers:
             self.DXL_present_POSITION_VALUE.append(dxl_present_position)
         print(" **** Read Present DXL Positon Value **** ")
         print(self.DXL_present_POSITION_VALUE)
-        DXL_present_deg = [int(i * 0.29)
-                           for i in self.DXL_present_POSITION_VALUE]
+        DXL_present_deg = [int(i * 0.29) for i in self.DXL_present_POSITION_VALUE]
         print(" **** Read Present DXL Degree **** ")
         print(DXL_present_deg)
         self.DXL_present_POSITION_VALUE.clear()
@@ -159,7 +183,7 @@ class Dynamixel_Controllers:
 
     def LadianToAngles(self, La):
         # radian to degree
-        La *= 180/np.pi
+        La *= 180 / np.pi
         La = [[int(x) for x in y] for y in La]
 
         self._thetas = La
@@ -222,8 +246,14 @@ if __name__ == "__main__":
     DXL_controller.DynamixelSetting()
 
     # caculate inverse kinematics
-    legEndpoints = np.array([[100, -100, 87.5, 1], [100, -100, -87.5, 1],
-                            [-100, -100, 87.5, 1], [-100, -100, -87.5, 1]])
+    legEndpoints = np.array(
+        [
+            [100, -100, 87.5, 1],
+            [100, -100, -87.5, 1],
+            [-100, -100, 87.5, 1],
+            [-100, -100, -87.5, 1],
+        ]
+    )
     LaDian = kn.initIK(legEndpoints)  # radians
 
     # set numbers of motor and ID
