@@ -3,7 +3,7 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 from Kinematics import kinematics as kn 
 import numpy as np
-import servo_controller
+# import servo_controller
 import time
 
 from dynamixel_sdk import *
@@ -62,6 +62,7 @@ class Dynamixel_Controllers:
         self.DXL_goal_deg = [0 for i in range(12)]
         self.DXL_present_deg = []
         self.DXL_present_POSITION_VALUE = []
+        self.DXL_goal_POSITION_VALUE = [0 for i in range(12)]
         
         self._servo_offsets = [150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150]
         
@@ -244,7 +245,7 @@ if __name__=="__main__":
     DXL_controller.ReadMotor(DXLMotor_N)
 
     # close the DXL_servo
-    DXL_controller.DisableTorque(DXLMotor_N)
-    DXL_controller.closeport()
+    # DXL_controller.DisableTorque(DXLMotor_N)
+    # DXL_controller.closeport()
         
    

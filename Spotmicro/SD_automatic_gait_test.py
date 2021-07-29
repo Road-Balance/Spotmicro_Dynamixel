@@ -9,7 +9,7 @@ import math
 import datetime as dt
 import keyboard
 import random
-import board
+# import board
 import busio
 import adafruit_bno055
 

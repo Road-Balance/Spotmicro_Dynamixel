@@ -421,7 +421,7 @@ class Protocol1PacketHandler(object):
 
     def write1ByteTxOnly(self, port, dxl_id, address, data):
         data_write = [data]
-        return self.writeTxOnly(port, dxl_id, address, 1, data_write)
+        return self.writeTxOnly(port, dxl_id, address, 1, data_write) 
 
     def write1ByteTxRx(self, port, dxl_id, address, data):
         data_write = [data]
