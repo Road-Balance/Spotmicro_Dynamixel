@@ -46,7 +46,7 @@ class Kinematic:
             [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]], dtype=np.float64
         )
 
-    @jit(nopython=True)
+    @jit
     def bodyIK(self, omega, phi, psi, xm, ym, zm):
         Rx = np.array(
             [

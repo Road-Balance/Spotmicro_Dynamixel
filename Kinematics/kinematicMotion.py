@@ -72,15 +72,19 @@ class TrottingGait:
     def __init__(self):
         self.step_gain = 0.8
         self.maxSl = 2
-        self.bodyPos = (0, 100, 0)
+        self.bodyPos = (0, 190, 0)
         self.bodyRot = (0, 0, 0)
-        self.t0 = 300  # 0 #300 # senseless i guess
-        self.t1 = 900  # 1200
-        self.t2 = 300  # 0 #300
-        self.t3 = 400  # 200
+        # self.t0 = 300  # 0 #300 # senseless i guess
+        # self.t1 = 400  # 1200
+        # self.t2 = 500  # 0 #300
+        # self.t3 = 400  # 200
+        self.t0 = 800  # 0 #300 # senseless i guess
+        self.t1 = 400  # 1200
+        self.t2 = 800  # 0 #300
+        self.t3 = 800  # 200
         self.Sl = 0
         self.Sw = 0
-        self.Sh = 30  # 100
+        self.Sh = 60  # 100
         self.Sa = 0
         self.Spf = 87
         self.Spr = 77
