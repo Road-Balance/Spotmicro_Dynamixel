@@ -5,7 +5,7 @@ import time
 import board
 import busio
 import adafruit_bno055
-import Spotmicro.spotmicroai as spotmicroai
+import robot as rb
 from SD_servo_controller_test import Dynamixel_Controllers
 from multiprocessing import Process
 from Common.multiprocess_kb import KeyInterrupt
@@ -62,7 +62,7 @@ def reset():
     rtime = time.time()
 
 
-robot = spotmicroai.Robot(False, False, reset)
+robot = rb.SpotCommander()
 # controller = servo_controller.Controllers()
 
 # TODO: Needs refactoring
@@ -74,7 +74,7 @@ speed1 = 322
 speed2 = 237
 speed3 = 436
 
-spurWidth = robot.W / 2 + 50
+# spurWidth = robot.W / 2 + 50
 stepLength = 0
 stepHeight = 72
 
@@ -106,14 +106,14 @@ def consoleClear():
         _ = system("clear")
 
 
-Lp = np.array(
-    [
-        [iXf, -170, spurWidth, 1],
-        [iXf, -170, -spurWidth, 1],
-        [-120, -170, spurWidth, 1],
-        [-120, -170, -spurWidth, 1],
-    ]
-)
+# Lp = np.array(
+#     [
+#         [iXf, -170, spurWidth, 1],
+#         [iXf, -170, -spurWidth, 1],
+#         [-120, -170, spurWidth, 1],
+#         [-120, -170, -spurWidth, 1],
+#     ]
+# )
 
 # Lp = np.array([[120, -140, 90, 1],[120, -140, -90, 1],[-120, -140, 90, 1],[-120, -140, -90, 1]])
 
@@ -134,37 +134,37 @@ def main(id, command_status):
 
         # ir = xr/(math.pi/180)
 
-        d = time.time() - rtime
+        # d = time.time() - rtime
 
-        # robot height
-        # height = 30  # 40
+        # # robot height
+        # # height = 30  # 40
 
-        # calculate robot step command from keyboard inputs
-        result_dict = command_status.get()
-        print(result_dict)
-        command_status.put(result_dict)
+        # # calculate robot step command from keyboard inputs
+        # result_dict = command_status.get()
+        # print(result_dict)
+        # command_status.put(result_dict)
 
-        # wait 3 seconds to start
-        if result_dict["StartStepping"]:
-            currentLp = trotting.positions(d - 3, result_dict)
-            robot.feetPosition(currentLp)
-        else:
-            robot.feetPosition(Lp)
-        # roll=-xr
+        # # wait 3 seconds to start
+        # if result_dict["StartStepping"]:
+        #     currentLp = trotting.positions(d - 3, result_dict)
+        #     robot.feetPosition(currentLp)
+        # else:
+        #     robot.feetPosition(Lp)
+        # # roll=-xr
 
-        # robot rotation
-        # robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
-        roll = 0
-        pitch = 0
-        yaw = 0
-        # pitch = -((sensor.euler[1]*math.pi)/180)
-        # yaw = -((sensor.euler[0]*math.pi)/180)
-        # roll = -((sensor.euler[2]*math.pi)/180)
-        # robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
-        robot.bodyRotation((roll, yaw, pitch))
-        # bodyX=50+yr*10
-        # robot.bodyPosition((bodyX, 40+height, -ir))
-        robot.bodyPosition((0, 0, 0))
+        # # robot rotation
+        # # robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
+        # roll = 0
+        # pitch = 0
+        # yaw = 0
+        # # pitch = -((sensor.euler[1]*math.pi)/180)
+        # # yaw = -((sensor.euler[0]*math.pi)/180)
+        # # roll = -((sensor.euler[2]*math.pi)/180)
+        # # robot.bodyRotation((roll,math.pi/180*((joy_x)-128)/3,-(1/256*joy_y-0.5)))
+        # robot.bodyRotation((roll, yaw, pitch))
+        # # bodyX=50+yr*10
+        # # robot.bodyPosition((bodyX, 40+height, -ir))
+        # robot.bodyPosition((0, 0, 0))
 
         # Get current Angles for each motor
         LaDian = robot.getAngle()
@@ -194,7 +194,7 @@ def main(id, command_status):
             # kn.initFK(jointAngles)
             # kn.plotKinematics()
 
-        robot.step()
+        robot.move()
         consoleClear()
 
 
