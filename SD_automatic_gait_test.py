@@ -168,7 +168,7 @@ def main(id, command_status):
 
         # Get current Angles for each motor
         LaDian = robot.getAngle()
-        print(LaDian)
+        # print(LaDian)
 
         # First Step doesn't contains jointAngles
         if len(LaDian):

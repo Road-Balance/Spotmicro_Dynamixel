@@ -195,32 +195,32 @@ class Dynamixel_Controllers:
         #     self.DXL_goal_deg[i] = self._servo_offsets[i] - self._thetas[int(i/3)][int(i%3)]
 
         # FL Lower
-        self.DXL_goal_deg[0] = self._servo_offsets[0] - self._thetas[0][0]
+        self.DXL_goal_deg[2] = self._servo_offsets[0] + self._thetas[0][0]
         # FL Upper
-        self.DXL_goal_deg[1] = self._servo_offsets[1] - self._thetas[0][1]
+        self.DXL_goal_deg[1] = self._servo_offsets[1] + self._thetas[0][1]
         # FL Shoulder
-        self.DXL_goal_deg[2] = self._servo_offsets[2] - self._thetas[0][2]
+        self.DXL_goal_deg[0] = self._servo_offsets[2] + self._thetas[0][2]
 
         # FR Lower
-        self.DXL_goal_deg[3] = self._servo_offsets[3] + self._thetas[1][0]
+        self.DXL_goal_deg[5] = self._servo_offsets[3] - self._thetas[1][0]
         # FR Upper
-        self.DXL_goal_deg[4] = self._servo_offsets[4] + self._thetas[1][1]
+        self.DXL_goal_deg[4] = self._servo_offsets[4] - self._thetas[1][1]
         # FR Shoulder
-        self.DXL_goal_deg[5] = self._servo_offsets[5] + self._thetas[1][2]
+        self.DXL_goal_deg[3] = self._servo_offsets[5] - self._thetas[1][2]
 
         # BL Lower
-        self.DXL_goal_deg[6] = self._servo_offsets[6] - self._thetas[2][0]
+        self.DXL_goal_deg[8] = self._servo_offsets[6] + self._thetas[2][0]
         # BL Upper
-        self.DXL_goal_deg[7] = self._servo_offsets[7] - self._thetas[2][1]
+        self.DXL_goal_deg[7] = self._servo_offsets[7] + self._thetas[2][1]
         # BL Shoulder, Formula flipped from the front
-        self.DXL_goal_deg[8] = self._servo_offsets[8] - self._thetas[2][2]
+        self.DXL_goal_deg[6] = self._servo_offsets[8] + self._thetas[2][2]
 
         # BR Lower.
-        self.DXL_goal_deg[9] = self._servo_offsets[9] + self._thetas[3][0]
+        self.DXL_goal_deg[11] = self._servo_offsets[9] - self._thetas[3][0]
         # BR Upper
-        self.DXL_goal_deg[10] = self._servo_offsets[10] + self._thetas[3][1]
+        self.DXL_goal_deg[10] = self._servo_offsets[10] - self._thetas[3][1]
         # BR Shoulder, Formula flipped from the front
-        self.DXL_goal_deg[11] = self._servo_offsets[11] + self._thetas[3][2]
+        self.DXL_goal_deg[9] = self._servo_offsets[11] - self._thetas[3][2]
 
         return self.DXL_goal_deg
 

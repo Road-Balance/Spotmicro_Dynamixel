@@ -10,6 +10,9 @@ import copy
 import sys
 import os
 import time
+import board
+import adafruit_bno055
+import busio
 
 sys.path.append("../../")
 
@@ -28,6 +31,11 @@ alpha = 0.7
 # Added this to avoid filtering residuals
 # -1 for all
 actions_to_filter = 14
+
+
+# 가속도 센서 Initializing
+i2c_bus0 = busio.I2C(board.SCL_1, board.SDA_1)
+sensor = adafruit_bno055.BNO055_I2C(i2c_bus0)
 
 
 class SpotCommander:
@@ -134,6 +142,10 @@ class SpotCommander:
         self.StepVelocity = copy.deepcopy(self.BaseStepVelocity)
         self.SwingPeriod = copy.deepcopy(self.BaseSwingPeriod)
 
+        print(sensor.acceleration)
+        print(sensor.gyro)
+        print(sensor.euler)
+
         StepLength = 0.2
         LateralFraction = 0.0
         YawRate = 0.0
@@ -211,20 +223,7 @@ class SpotCommander:
 
         joint_angles = self.spot.IK(orn, pos, T_bf_copy)
 
-        self.angles = [
-            joint_angles[0][2],
-            joint_angles[0][1],
-            joint_angles[0][0],
-            joint_angles[1][2],
-            joint_angles[1][1],
-            joint_angles[1][0],
-            joint_angles[2][2],
-            joint_angles[2][1],
-            joint_angles[2][0],
-            joint_angles[3][2],
-            joint_angles[3][1],
-            joint_angles[3][0],
-        ]
+        self.angles = joint_angles
 
         # ja_msg.fls = np.degrees(joint_angles[0][0])  # fls
         # ja_msg.fle = np.degrees(joint_angles[0][1])  # fle
