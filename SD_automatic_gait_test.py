@@ -117,10 +117,10 @@ def consoleClear():
 
 # Lp = np.array([[120, -140, 90, 1],[120, -140, -90, 1],[-120, -140, 90, 1],[-120, -140, -90, 1]])
 
-motion = KinematicMotion(Lp)
-resetPose()
+# motion = KinematicMotion(Lp)
+# resetPose()
 
-trotting = TrottingGait()
+# trotting = TrottingGait()
 
 
 def main(id, command_status):

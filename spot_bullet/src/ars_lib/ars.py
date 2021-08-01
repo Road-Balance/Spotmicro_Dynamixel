@@ -43,19 +43,17 @@ cum_dt_exp = 0.0
 
 
 def butter_lowpass_filter(data, cutoff, fs, order=2):
-    """ Pass two subsequent datapoints in here to be filtered
-    """
+    """Pass two subsequent datapoints in here to be filtered"""
     nyq = 0.5 * fs  # Nyquist Frequency
     normal_cutoff = cutoff / nyq
     # Get the filter coefficients
-    b, a = butter(order, normal_cutoff, btype='low', analog=False)
+    b, a = butter(order, normal_cutoff, btype="low", analog=False)
     y = filtfilt(b, a, data)
     return y
 
 
 def ParallelWorker(childPipe, env, nb_states):
-    """ Function to deploy multiple ARS agents in parallel
-    """
+    """Function to deploy multiple ARS agents in parallel"""
     # nb_states = env.observation_space.shape[0]
     # common normalizer
     normalizer = Normalizer(nb_states)
@@ -131,8 +129,16 @@ def ParallelWorker(childPipe, env, nb_states):
             yaw = 0.0
             while not done and timesteps < policy.episode_steps:
                 # smach.ramp_up()
-                pos, orn, StepLength, LateralFraction, YawRate, StepVelocity, ClearanceHeight, PenetrationDepth = smach.StateMachine(
-                )
+                (
+                    pos,
+                    orn,
+                    StepLength,
+                    LateralFraction,
+                    YawRate,
+                    StepVelocity,
+                    ClearanceHeight,
+                    PenetrationDepth,
+                ) = smach.StateMachine()
 
                 env.spot.GetExternalObservations(TGP, smach)
 
@@ -148,29 +154,40 @@ def ParallelWorker(childPipe, env, nb_states):
                 action = np.tanh(action)
 
                 # EXP FILTER
-                action[:actions_to_filter] = alpha * old_act + (
-                    1.0 - alpha) * action[:actions_to_filter]
+                action[:actions_to_filter] = (
+                    alpha * old_act + (1.0 - alpha) * action[:actions_to_filter]
+                )
                 old_act = action[:actions_to_filter]
 
                 ClearanceHeight += action[0] * CD_SCALE
 
                 # CLIP EVERYTHING
-                StepLength = np.clip(StepLength, smach.StepLength_LIMITS[0],
-                                     smach.StepLength_LIMITS[1])
-                StepVelocity = np.clip(StepVelocity,
-                                       smach.StepVelocity_LIMITS[0],
-                                       smach.StepVelocity_LIMITS[1])
-                LateralFraction = np.clip(LateralFraction,
-                                          smach.LateralFraction_LIMITS[0],
-                                          smach.LateralFraction_LIMITS[1])
-                YawRate = np.clip(YawRate, smach.YawRate_LIMITS[0],
-                                  smach.YawRate_LIMITS[1])
-                ClearanceHeight = np.clip(ClearanceHeight,
-                                          smach.ClearanceHeight_LIMITS[0],
-                                          smach.ClearanceHeight_LIMITS[1])
-                PenetrationDepth = np.clip(PenetrationDepth,
-                                           smach.PenetrationDepth_LIMITS[0],
-                                           smach.PenetrationDepth_LIMITS[1])
+                StepLength = np.clip(
+                    StepLength, smach.StepLength_LIMITS[0], smach.StepLength_LIMITS[1]
+                )
+                StepVelocity = np.clip(
+                    StepVelocity,
+                    smach.StepVelocity_LIMITS[0],
+                    smach.StepVelocity_LIMITS[1],
+                )
+                LateralFraction = np.clip(
+                    LateralFraction,
+                    smach.LateralFraction_LIMITS[0],
+                    smach.LateralFraction_LIMITS[1],
+                )
+                YawRate = np.clip(
+                    YawRate, smach.YawRate_LIMITS[0], smach.YawRate_LIMITS[1]
+                )
+                ClearanceHeight = np.clip(
+                    ClearanceHeight,
+                    smach.ClearanceHeight_LIMITS[0],
+                    smach.ClearanceHeight_LIMITS[1],
+                )
+                PenetrationDepth = np.clip(
+                    PenetrationDepth,
+                    smach.PenetrationDepth_LIMITS[0],
+                    smach.PenetrationDepth_LIMITS[1],
+                )
 
                 # For auto yaw control
                 yaw = env.return_yaw()
@@ -178,14 +195,29 @@ def ParallelWorker(childPipe, env, nb_states):
 
                 # Get Desired Foot Poses
                 if timesteps > 20:
-                    T_bf = TGP.GenerateTrajectory(StepLength, LateralFraction,
-                                                  YawRate, StepVelocity, T_b0,
-                                                  T_bf, ClearanceHeight,
-                                                  PenetrationDepth, contacts)
+                    T_bf = TGP.GenerateTrajectory(
+                        StepLength,
+                        LateralFraction,
+                        YawRate,
+                        StepVelocity,
+                        T_b0,
+                        T_bf,
+                        ClearanceHeight,
+                        PenetrationDepth,
+                        contacts,
+                    )
                 else:
-                    T_bf = TGP.GenerateTrajectory(0.0, 0.0, 0.0, 0.1, T_b0,
-                                                  T_bf, ClearanceHeight,
-                                                  PenetrationDepth, contacts)
+                    T_bf = TGP.GenerateTrajectory(
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.1,
+                        T_b0,
+                        T_bf,
+                        ClearanceHeight,
+                        PenetrationDepth,
+                        contacts,
+                    )
                     action[:] = 0.0
 
                 action[2:] *= RESIDUALS_SCALE
@@ -208,7 +240,7 @@ def ParallelWorker(childPipe, env, nb_states):
                 sum_rewards += reward
                 timesteps += 1
                 # Divide reward by timesteps for normalized reward + add exponential surival reward
-            childPipe.send([(sum_rewards + timesteps**cum_dt_exp) / timesteps])
+            childPipe.send([(sum_rewards + timesteps ** cum_dt_exp) / timesteps])
             continue
         if message == _CLOSE:
             childPipe.send(["close ok"])
@@ -216,27 +248,28 @@ def ParallelWorker(childPipe, env, nb_states):
     childPipe.close()
 
 
-class Policy():
-    """ state --> action
-    """
+class Policy:
+    """state --> action"""
+
     def __init__(
-            self,
-            state_dim,
-            action_dim,
-            # how much weights are changed each step
-            learning_rate=0.03,
-            # number of random expl_noise variations generated
-            # each step
-            # each one will be run for 2 epochs, + and -
-            num_deltas=16,
-            # used to update weights, sorted by highest rwrd
-            num_best_deltas=16,
-            # number of timesteps per episode per rollout
-            episode_steps=5000,
-            # weight of sampled exploration noise
-            expl_noise=0.05,
-            # for seed gen
-            seed=0):
+        self,
+        state_dim,
+        action_dim,
+        # how much weights are changed each step
+        learning_rate=0.03,
+        # number of random expl_noise variations generated
+        # each step
+        # each one will be run for 2 epochs, + and -
+        num_deltas=16,
+        # used to update weights, sorted by highest rwrd
+        num_best_deltas=16,
+        # number of timesteps per episode per rollout
+        episode_steps=5000,
+        # weight of sampled exploration noise
+        expl_noise=0.05,
+        # for seed gen
+        seed=0,
+    ):
 
         # Tunable Hyperparameters
         self.learning_rate = learning_rate
@@ -256,8 +289,7 @@ class Policy():
         self.theta = np.zeros((action_dim, state_dim))
 
     def evaluate(self, state, delta=None, direction=None):
-        """ state --> action
-        """
+        """state --> action"""
 
         # if direction is None, deployment mode: takes dot product
         # to directly sample from (use) policy
@@ -272,10 +304,10 @@ class Policy():
             return (self.theta - self.expl_noise * delta).dot(state)
 
     def sample_deltas(self):
-        """ generate array of random expl_noise matrices. Length of
-            array = num_deltas
-            matrix dimension: pxn where p=observation dim and
-            n=action dim
+        """generate array of random expl_noise matrices. Length of
+        array = num_deltas
+        matrix dimension: pxn where p=observation dim and
+        n=action dim
         """
         deltas = []
         # print("SHAPE THING with *: {}".format(*self.theta.shape))
@@ -288,40 +320,39 @@ class Policy():
         #     np.random.randn(self.theta.shape[0], self.theta.shape[1]).shape))
 
         for _ in range(self.num_deltas):
-            deltas.append(
-                np.random.randn(self.theta.shape[0], self.theta.shape[1]))
+            deltas.append(np.random.randn(self.theta.shape[0], self.theta.shape[1]))
 
         return deltas
 
     def update(self, rollouts, std_dev_rewards):
-        """ Update policy weights (theta) based on rewards
-            from 2*num_deltas rollouts
+        """Update policy weights (theta) based on rewards
+        from 2*num_deltas rollouts
         """
         step = np.zeros(self.theta.shape)
         for r_pos, r_neg, delta in rollouts:
             # how much to deviate from policy
             step += (r_pos - r_neg) * delta
-        self.theta += self.learning_rate / (self.num_best_deltas *
-                                            std_dev_rewards) * step
+        self.theta += (
+            self.learning_rate / (self.num_best_deltas * std_dev_rewards) * step
+        )
 
 
-class Normalizer():
-    """ this ensures that the policy puts equal weight upon
-        each state component.
+class Normalizer:
+    """this ensures that the policy puts equal weight upon
+    each state component.
     """
 
     # Normalizes the states
     def __init__(self, state_dim):
-        """ Initialize state space (all zero)
-        """
+        """Initialize state space (all zero)"""
         self.state = np.zeros(state_dim)
         self.mean = np.zeros(state_dim)
         self.mean_diff = np.zeros(state_dim)
         self.var = np.zeros(state_dim)
 
     def observe(self, x):
-        """ Compute running average and variance
-            clip variance >0 to avoid division by zero
+        """Compute running average and variance
+        clip variance >0 to avoid division by zero
         """
         self.state += 1.0
         last_mean = self.mean.copy()
@@ -335,24 +366,19 @@ class Normalizer():
         self.var = (self.mean_diff / self.state).clip(min=1e-2)
 
     def normalize(self, states):
-        """ subtract mean state value from current state
-            and divide by standard deviation (sqrt(var))
-            to normalize
+        """subtract mean state value from current state
+        and divide by standard deviation (sqrt(var))
+        to normalize
         """
         state_mean = self.mean
         state_std = np.sqrt(self.var)
         return (states - state_mean) / state_std
 
 
-class ARSAgent():
-    def __init__(self,
-                 normalizer,
-                 policy,
-                 env,
-                 smach=None,
-                 TGP=None,
-                 spot=None,
-                 gui=False):
+class ARSAgent:
+    def __init__(
+        self, normalizer, policy, env, smach=None, TGP=None, spot=None, gui=False
+    ):
         self.normalizer = normalizer
         self.policy = policy
         self.state_dim = self.policy.state_dim
@@ -397,8 +423,7 @@ class ARSAgent():
             action = self.policy.evaluate(state, delta, direction)
             # Clip action between +-1 for execution in env
             for a in range(len(action)):
-                action[a] = np.clip(action[a], -self.max_action,
-                                    self.max_action)
+                action[a] = np.clip(action[a], -self.max_action, self.max_action)
             # print("ACTION: ", action)
             state, reward, done, _ = self.env.step(action)
             # print("STATE: ", state)
@@ -408,7 +433,7 @@ class ARSAgent():
             sum_rewards += reward
             timesteps += 1
             # Divide rewards by timesteps for reward-per-step + exp survive rwd
-        return (sum_rewards + timesteps**cum_dt_exp) / timesteps
+        return (sum_rewards + timesteps ** cum_dt_exp) / timesteps
 
     # Deploy Policy in one direction over one whole episode
     # DO THIS ONCE PER ROLLOUT OR DURING DEPLOYMENT
@@ -431,12 +456,29 @@ class ARSAgent():
         yaw = 0.0
         while not done and timesteps < self.policy.episode_steps:
             # self.smach.ramp_up()
-            pos, orn, StepLength, LateralFraction, YawRate, StepVelocity, ClearanceHeight, PenetrationDepth = self.smach.StateMachine(
-            )
+            (
+                pos,
+                orn,
+                StepLength,
+                LateralFraction,
+                YawRate,
+                StepVelocity,
+                ClearanceHeight,
+                PenetrationDepth,
+            ) = self.smach.StateMachine()
 
             if self.g_u_i:
-                pos, orn, StepLength, LateralFraction, YawRate, StepVelocity, ClearanceHeight, PenetrationDepth, SwingPeriod = self.g_u_i.UserInput(
-                )
+                (
+                    pos,
+                    orn,
+                    StepLength,
+                    LateralFraction,
+                    YawRate,
+                    StepVelocity,
+                    ClearanceHeight,
+                    PenetrationDepth,
+                    SwingPeriod,
+                ) = self.g_u_i.UserInput()
                 self.TGP.Tswing = SwingPeriod
 
             self.env.spot.GetExternalObservations(self.TGP, self.smach)
@@ -461,29 +503,42 @@ class ARSAgent():
             action = np.tanh(action)
 
             # EXP FILTER
-            action[:actions_to_filter] = alpha * old_act + (
-                1.0 - alpha) * action[:actions_to_filter]
+            action[:actions_to_filter] = (
+                alpha * old_act + (1.0 - alpha) * action[:actions_to_filter]
+            )
             old_act = action[:actions_to_filter]
 
             ClearanceHeight += action[0] * CD_SCALE
 
             # CLIP EVERYTHING
-            StepLength = np.clip(StepLength, self.smach.StepLength_LIMITS[0],
-                                 self.smach.StepLength_LIMITS[1])
-            StepVelocity = np.clip(StepVelocity,
-                                   self.smach.StepVelocity_LIMITS[0],
-                                   self.smach.StepVelocity_LIMITS[1])
-            LateralFraction = np.clip(LateralFraction,
-                                      self.smach.LateralFraction_LIMITS[0],
-                                      self.smach.LateralFraction_LIMITS[1])
-            YawRate = np.clip(YawRate, self.smach.YawRate_LIMITS[0],
-                              self.smach.YawRate_LIMITS[1])
-            ClearanceHeight = np.clip(ClearanceHeight,
-                                      self.smach.ClearanceHeight_LIMITS[0],
-                                      self.smach.ClearanceHeight_LIMITS[1])
-            PenetrationDepth = np.clip(PenetrationDepth,
-                                       self.smach.PenetrationDepth_LIMITS[0],
-                                       self.smach.PenetrationDepth_LIMITS[1])
+            StepLength = np.clip(
+                StepLength,
+                self.smach.StepLength_LIMITS[0],
+                self.smach.StepLength_LIMITS[1],
+            )
+            StepVelocity = np.clip(
+                StepVelocity,
+                self.smach.StepVelocity_LIMITS[0],
+                self.smach.StepVelocity_LIMITS[1],
+            )
+            LateralFraction = np.clip(
+                LateralFraction,
+                self.smach.LateralFraction_LIMITS[0],
+                self.smach.LateralFraction_LIMITS[1],
+            )
+            YawRate = np.clip(
+                YawRate, self.smach.YawRate_LIMITS[0], self.smach.YawRate_LIMITS[1]
+            )
+            ClearanceHeight = np.clip(
+                ClearanceHeight,
+                self.smach.ClearanceHeight_LIMITS[0],
+                self.smach.ClearanceHeight_LIMITS[1],
+            )
+            PenetrationDepth = np.clip(
+                PenetrationDepth,
+                self.smach.PenetrationDepth_LIMITS[0],
+                self.smach.PenetrationDepth_LIMITS[1],
+            )
 
             contacts = copy.deepcopy(state[-4:])
             # contacts = [0, 0, 0, 0]
@@ -496,14 +551,29 @@ class ARSAgent():
 
             # Get Desired Foot Poses
             if timesteps > 20:
-                T_bf = self.TGP.GenerateTrajectory(StepLength, LateralFraction,
-                                                   YawRate, StepVelocity, T_b0,
-                                                   T_bf, ClearanceHeight,
-                                                   PenetrationDepth, contacts)
+                T_bf = self.TGP.GenerateTrajectory(
+                    StepLength,
+                    LateralFraction,
+                    YawRate,
+                    StepVelocity,
+                    T_b0,
+                    T_bf,
+                    ClearanceHeight,
+                    PenetrationDepth,
+                    contacts,
+                )
             else:
-                T_bf = self.TGP.GenerateTrajectory(0.0, 0.0, 0.0, 0.1, T_b0,
-                                                   T_bf, ClearanceHeight,
-                                                   PenetrationDepth, contacts)
+                T_bf = self.TGP.GenerateTrajectory(
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.1,
+                    T_b0,
+                    T_bf,
+                    ClearanceHeight,
+                    PenetrationDepth,
+                    contacts,
+                )
                 action[:] = 0.0
 
             action[2:] *= RESIDUALS_SCALE
@@ -556,17 +626,19 @@ class ARSAgent():
         std_dev_rewards = np.array(positive_rewards + negative_rewards).std()
 
         # Order rollouts in decreasing list using cum reward as criterion
-        unsorted_rollouts = [(positive_rewards[i], negative_rewards[i],
-                              deltas[i])
-                             for i in range(self.policy.num_deltas)]
+        unsorted_rollouts = [
+            (positive_rewards[i], negative_rewards[i], deltas[i])
+            for i in range(self.policy.num_deltas)
+        ]
         # When sorting, take the max between the reward for +- disturbance
         sorted_rollouts = sorted(
             unsorted_rollouts,
             key=lambda x: max(unsorted_rollouts[0], unsorted_rollouts[1]),
-            reverse=True)
+            reverse=True,
+        )
 
         # Only take first best_num_deltas rollouts
-        rollouts = sorted_rollouts[:self.policy.num_best_deltas]
+        rollouts = sorted_rollouts[: self.policy.num_best_deltas]
 
         # Update Policy
         self.policy.update(rollouts, std_dev_rewards)
@@ -576,8 +648,8 @@ class ARSAgent():
         return eval_reward
 
     def train_parallel(self, parentPipes):
-        """ Execute rollouts in parallel using multiprocessing library
-            based on: # https://github.com/bulletphysics/bullet3/blob/master/examples/pybullet/gym/pybullet_envs/ARS/ars.py
+        """Execute rollouts in parallel using multiprocessing library
+        based on: # https://github.com/bulletphysics/bullet3/blob/master/examples/pybullet/gym/pybullet_envs/ARS/ars.py
         """
         # USE VANILLA OR TG POLICY
         if self.TGP is None:
@@ -602,14 +674,22 @@ class ARSAgent():
                 parentPipe = parentPipes[i]
                 # NOTE: target for parentPipe specified in main_ars.py
                 # (target is ParallelWorker fcn defined up top)
-                parentPipe.send([
-                    exploration,
+                parentPipe.send(
                     [
-                        self.normalizer, self.policy, "+", deltas[i],
-                        self.desired_velocity, self.desired_rate, self.TGP,
-                        smach, self.spot
+                        exploration,
+                        [
+                            self.normalizer,
+                            self.policy,
+                            "+",
+                            deltas[i],
+                            self.desired_velocity,
+                            self.desired_rate,
+                            self.TGP,
+                            smach,
+                            self.spot,
+                        ],
                     ]
-                ])
+                )
             for i in range(self.policy.num_deltas):
                 # Receive cummulative reward from each rollout
                 positive_rewards[i] = parentPipes[i].recv()[0]
@@ -617,21 +697,30 @@ class ARSAgent():
             for i in range(self.policy.num_deltas):
                 # Execute each rollout on a separate thread
                 parentPipe = parentPipes[i]
-                parentPipe.send([
-                    exploration,
+                parentPipe.send(
                     [
-                        self.normalizer, self.policy, "-", deltas[i],
-                        self.desired_velocity, self.desired_rate, self.TGP,
-                        smach, self.spot
+                        exploration,
+                        [
+                            self.normalizer,
+                            self.policy,
+                            "-",
+                            deltas[i],
+                            self.desired_velocity,
+                            self.desired_rate,
+                            self.TGP,
+                            smach,
+                            self.spot,
+                        ],
                     ]
-                ])
+                )
             for i in range(self.policy.num_deltas):
                 # Receive cummulative reward from each rollout
                 negative_rewards[i] = parentPipes[i].recv()[0]
 
         else:
             raise ValueError(
-                "Select 'train' method if you are not using multiprocessing!")
+                "Select 'train' method if you are not using multiprocessing!"
+            )
 
         # Calculate std dev
         std_dev_rewards = np.array(positive_rewards + negative_rewards).std()
@@ -641,15 +730,15 @@ class ARSAgent():
         # Store max between positive and negative reward as key for sort
         scores = {
             k: max(r_pos, r_neg)
-            for k, (
-                r_pos,
-                r_neg) in enumerate(zip(positive_rewards, negative_rewards))
+            for k, (r_pos, r_neg) in enumerate(zip(positive_rewards, negative_rewards))
         }
-        indeces = sorted(scores.keys(), key=lambda x: scores[x],
-                         reverse=True)[:self.policy.num_deltas]
+        indeces = sorted(scores.keys(), key=lambda x: scores[x], reverse=True)[
+            : self.policy.num_deltas
+        ]
         # print("INDECES: ", indeces)
-        rollouts = [(positive_rewards[k], negative_rewards[k], deltas[k])
-                    for k in indeces]
+        rollouts = [
+            (positive_rewards[k], negative_rewards[k], deltas[k]) for k in indeces
+        ]
 
         # Update Policy
         self.policy.update(rollouts, std_dev_rewards)
@@ -661,17 +750,17 @@ class ARSAgent():
             return self.deployTG()
 
     def save(self, filename):
-        """ Save the Policy
+        """Save the Policy
 
         :param filename: the name of the file where the policy is saved
         """
-        with open(filename + '_policy', 'wb') as filehandle:
+        with open(filename + "_policy", "wb") as filehandle:
             pickle.dump(self.policy.theta, filehandle)
 
     def load(self, filename):
-        """ Load the Policy
+        """Load the Policy
 
         :param filename: the name of the file where the policy is saved
         """
-        with open(filename + '_policy', 'rb') as filehandle:
-            self.policy.theta = pickle.load(filehandle)
+        with open(filename + "_policy", "rb") as filehandle:
+            self.policy.theta = pickle.load(filehandle, encoding="latin1")

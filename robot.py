@@ -211,7 +211,20 @@ class SpotCommander:
 
         joint_angles = self.spot.IK(orn, pos, T_bf_copy)
 
-        self.angles = joint_angles
+        self.angles = [
+            joint_angles[0][2],
+            joint_angles[0][1],
+            joint_angles[0][0],
+            joint_angles[1][2],
+            joint_angles[1][1],
+            joint_angles[1][0],
+            joint_angles[2][2],
+            joint_angles[2][1],
+            joint_angles[2][0],
+            joint_angles[3][2],
+            joint_angles[3][1],
+            joint_angles[3][0],
+        ]
 
         # ja_msg.fls = np.degrees(joint_angles[0][0])  # fls
         # ja_msg.fle = np.degrees(joint_angles[0][1])  # fle
