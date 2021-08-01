@@ -93,9 +93,9 @@ class SpotCommander:
         agent = ARSAgent(self.normalizer, self.policy, env)
         my_path = os.path.abspath(os.path.dirname(__file__))
         if contacts:
-            models_path = os.path.join(my_path, "../../spot_bullet/models/contact")
+            models_path = os.path.join(my_path, "spot_bullet/models/contact")
         else:
-            models_path = os.path.join(my_path, "../../spot_bullet/models/no_contact")
+            models_path = os.path.join(my_path, "spot_bullet/models/no_contact")
 
         print("MODEL PATH: {}".format(my_path))
         file_name = "spot_ars_"
