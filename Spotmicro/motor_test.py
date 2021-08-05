@@ -21,7 +21,7 @@ import numpy as np
 import time
 
 from dynamixel_sdk import *
-
+import time
 import matplotlib.pyplot as plt
 
 ADDR_MX_TORQUE_ENABLE      = 24               
@@ -46,7 +46,7 @@ DXL_Motor = 12
 
 DXL_ID = []
 DXL_ID = [ i + 1 for i in range(DXL_Motor)] 
-i = 8
+i = 2   
 DXL_goal_POSITION_VALUE = [512 for i in range(DXL_Motor)]
 
 # Open port
@@ -86,6 +86,8 @@ while 1:
         break
         # Write goal position
     # for i in range(DXL_Motor):
+    secs = time.time()
+    print(secs)
     xl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, i, ADDR_MX_MOVING_SPEED, speed)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
@@ -107,14 +109,20 @@ while 1:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
     print(" present speed ")
     print(dxl_present_speed)
-    
-    dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, i , ADDR_MX_PRESENT_POSITION)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
-    print(" present position ")
+    while 1 :
+        dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, i , ADDR_MX_PRESENT_POSITION)
+        if dxl_comm_result != COMM_SUCCESS:
+            print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+        elif dxl_error != 0:
+            print("%s" % packetHandler.getRxPacketError(dxl_error))
+        
+        print(dxl_present_position)
+        if dxl_present_position == position_value:
+            secs1 = time.time()
+            print(secs1)
+            break
     print(dxl_present_position)
+
 
 # for i in range(DXL_Motor):
 dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, i, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE)
