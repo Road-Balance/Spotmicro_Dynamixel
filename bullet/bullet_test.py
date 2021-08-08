@@ -2,6 +2,7 @@ import pybullet as p
 import time
 import pybullet_data
 
+# ROBOT_URDF = "./urdf/spotmicroai_no_mesh.urdf"
 ROBOT_URDF = "./urdf/spotmicroai_sample.urdf"
 
 physicsClient = p.connect(p.GUI)

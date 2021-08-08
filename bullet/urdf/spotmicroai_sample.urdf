@@ -13,17 +13,23 @@
   <material name="grey">
     <color rgba="0.6 0.6 0.6 1"/>
   </material>
+
   <!-- Params -->
   <!-- Macros -->
   <!-- Robot Body -->
   <link name="base_link">
     <visual>
       <geometry>
-        <mesh filename="../Parts/mainbody.stl" scale="0.001 0.001 0.001"/>
+        <!-- 부품을 감싸는 가장 작은 도형 -->
+        <box size="0.25 0.1 0.07"/>
+        <!-- <mesh filename="../Parts/mainbody.stl" scale="0.001 0.001 0.001"/> -->
       </geometry>
       <material name="black"/>
-      <origin rpy="0 0 0" xyz="-0.045 -0.060 -0.015"/>
+      <!-- parent link로부터 해당 파츠 원점의 위치 -->
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <!-- <origin rpy="0 0 0" xyz="-0.045 -0.060 -0.015"/> -->
     </visual>
+    <!-- collision은 visual이랑 동일하게 하자 -->
     <collision>
       <geometry>
         <box size="0.14 0.11 0.07"/>
@@ -35,35 +41,12 @@
       <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100"/>
     </inertial>
   </link>
-  <!-- Lidar Backpack -->
-  <!-- <link name="lidar_link">
-    <visual>
-      <geometry>
-        <mesh filename="../STL/lidar/rplidar_main.STL" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="black"/>
-      <origin rpy="1.57075 0 0" xyz="-0.06425 0.02885 0"/>
-    </visual>
-    <collision>
-      <geometry>
-        <box size="0.0985 0.0577 0.07"/>
-      </geometry>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-    </collision>
-    <inertial>
-      <mass value="0.50"/>
-      <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100"/>
-    </inertial>
-  </link>
-  <joint name="base_lidar" type="fixed">
-    <parent link="base_link"/>
-    <child link="lidar_link"/>
-    <origin xyz="0 0 0.035"/>
-  </joint> -->
+
   <link name="rear_link">
     <visual>
       <geometry>
-        <mesh filename="../Parts/backpart.stl" scale="0.001 0.001 0.001"/>
+        <box size="0.04 0.11 0.07"/>
+        <!-- <mesh filename="../Parts/backpart.stl" scale="0.001 0.001 0.001"/> -->
       </geometry>
       <origin rpy="0 0 0" xyz="-0.040 -0.060 -0.0140"/>
       <material name="yellow"/>
@@ -79,13 +62,16 @@
       <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100"/>
     </inertial>
   </link>
+
   <joint name="base_rear" type="fixed">
     <parent link="base_link"/>
     <child link="rear_link"/>
   </joint>
+
   <link name="front_link">
     <visual>
       <geometry>
+        <!-- <box size="0.058 0.11 0.07"/> -->
         <mesh filename="../Parts/frontpart.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin rpy="0 0 0" xyz="-0.040 -0.060 -0.0140"/>
@@ -102,10 +88,12 @@
       <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100"/>
     </inertial>
   </link>
+
   <joint name="base_front" type="fixed">
     <parent link="base_link"/>
     <child link="front_link"/>
   </joint>
+
   <!-- create Legs -->
   <link name="front_left_shoulder_link">
     <visual>
@@ -126,6 +114,7 @@
       <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100"/>
     </inertial>
   </link>
+
   <link name="front_left_leg_link_cover">
     <visual>
       <geometry>
@@ -135,6 +124,7 @@
       <material name="yellow"/>
     </visual>
   </link>
+
   <link name="front_left_leg_link">
     <visual>
       <geometry>
@@ -159,6 +149,7 @@
       <inertia ixx="1000" ixy="0" ixz="0" iyy="1000" iyz="0" izz="1000"/>
     </inertial>
   </link>
+  
   <link name="front_left_foot_link">
     <visual>
       <geometry>
