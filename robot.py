@@ -42,7 +42,7 @@ class SpotCommander:
     def __init__(self, Agent=True, contacts=False):
 
         self.Agent = Agent
-        self.agent_num = 119
+        self.agent_num = 999
 
         # FIXED
         self.BaseStepVelocity = 0.001
