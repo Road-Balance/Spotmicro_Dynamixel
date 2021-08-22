@@ -142,9 +142,18 @@ class SpotCommander:
         self.StepVelocity = copy.deepcopy(self.BaseStepVelocity)
         self.SwingPeriod = copy.deepcopy(self.BaseSwingPeriod)
 
-        print(sensor.acceleration)
-        print(sensor.gyro)
-        print(sensor.euler)
+        # self.imu = [
+        #     sensor.euler[0],
+        #     sensor.euler[1],
+        #     np.radians(sensor.gyro[0]),
+        #     np.radians(sensor.gyro[1]),
+        #     np.radians(sensor.gyro[2]),
+        #     sensor.acceleration[0],
+        #     sensor.acceleration[1],
+        #     sensor.acceleration[2] - 9.81
+        # ]
+
+        print(self.imu)
 
         StepLength = 0.2
         LateralFraction = 0.0
