@@ -3,7 +3,9 @@ import time
 import pybullet_data
 
 # ROBOT_URDF = "./urdf/spotmicroai_no_mesh.urdf"
-ROBOT_URDF = "./urdf/spotmicroai_sample.urdf"
+# ROBOT_URDF = "./urdf/spotmicroai_sample.urdf"
+# ROBOT_URDF = "./urdf/spot_ws.urdf"
+ROBOT_URDF = "./urdf/new_lover.urdf"
 
 physicsClient = p.connect(p.GUI)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
